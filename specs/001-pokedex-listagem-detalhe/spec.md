@@ -188,9 +188,10 @@ entre seus tipos, e que "Todos os tipos" restaura a listagem completa.
   obtidos.
 - **FR-019**: Em caso de falha ao obter dados, o sistema DEVE exibir mensagem compreensível e uma
   ação "Tentar novamente" acionada pela pessoa, sem repetir tentativas automaticamente.
-- **FR-020**: Dados já obtidos (páginas, detalhes, cadeias, tipos e imagens) DEVEM ser
-  reaproveitados em novas visitas, inclusive após recarregar a aplicação, sem nova obtenção na
-  fonte de dados.
+- **FR-020**: Dados já obtidos (páginas, detalhes, cadeias e tipos) DEVEM ser reaproveitados em
+  novas visitas, inclusive após recarregar a aplicação, sem nova obtenção na fonte de dados.
+  Imagens seguem o cache padrão do navegador e podem ser revalidadas junto ao serviço de imagens,
+  que é separado da fonte de dados.
 - **FR-021**: O sistema DEVE obter apenas os dados necessários para o que está sendo exibido,
   nunca os detalhes de todos os Pokémon de uma vez.
 - **FR-022**: Quando a imagem de um Pokémon não estiver disponível, o sistema DEVE exibir um

@@ -53,7 +53,8 @@ Use o build de produção (`web`) com as DevTools abertas na aba Network, filtra
 3. Abra `/pokemon/133` (Eevee). Esperado: todas as evoluções aparecem como ramificações.
 4. Abra `/pokemon/128` (Tauros). Esperado: indicação de que não evolui.
 5. Abra `/pokemon/99999`. Esperado: "Pokémon não encontrado" com link para a listagem e nenhuma
-   requisição à PokeAPI.
+   requisição a `pokemon/99999` ou `pokemon-species/99999`. A única requisição possível é a da
+   lista de espécies (usada para validar o número), e só se ela ainda não estiver em cache.
 6. Aplique busca "char" e tipo Fogo, vá para a página de resultados desejada, abra um detalhe e
    acione "Voltar à listagem". Esperado: mesma página, busca e filtro.
 

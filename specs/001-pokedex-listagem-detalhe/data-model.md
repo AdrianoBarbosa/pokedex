@@ -48,6 +48,9 @@ antes de o mapa terminar de carregar.
 Associação `id → TipoId[]` (um ou dois tipos, em ordem de `slot`), montada a partir dos 18
 recursos de tipo. Contém só ids de espécies (até o total de espécies).
 
+É representada como objeto simples (`Record<number, TipoId[]>`) e não como `Map`, porque o cache
+persiste os dados em JSON e um `Map` seria serializado como objeto vazio.
+
 ### PokemonDetalhe
 
 | Campo | Tipo | Regra |

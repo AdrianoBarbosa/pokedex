@@ -12,8 +12,8 @@ rejeitam com um **ErroDeDados** em caso de falha.
 | Operação | Retorno | Requisições na PokeAPI (sem cache) |
 |---|---|---|
 | `listarEspecies()` | `PokemonResumo[]` ordenado por `id` | 1 |
-| `carregarMapaDeTipos()` | `MapaDeTipos` | 18 (em paralelo) |
-| `obterPokemon(id)` | `PokemonDetalhe` | 2 (`pokemon` e `pokemon-species`) |
+| `carregarMapaDeTipos()` | `MapaDeTipos` | 18 (em paralelo), mais a lista de espécies se ainda não estiver em cache |
+| `obterPokemon(id)` | `PokemonDetalhe` | 2 (`pokemon` e `pokemon-species`), mais a lista de espécies se ainda não estiver em cache |
 | `obterCadeiaEvolucao(cadeiaEvolucaoId)` | `NoEvolucao` (raiz) | 1 |
 
 Funções puras (sem rede, sem cache):
@@ -27,6 +27,10 @@ Funções puras (sem rede, sem cache):
 
 Quando o MapaDeTipos ainda não carregou (nulo), `filtrarEPaginar` ignora o filtro de tipo e a
 interface mantém o seletor de tipo desabilitado.
+
+`obterPokemon` e `carregarMapaDeTipos` usam `listarEspecies()` para conhecer o total de
+espécies (validação do id e descarte de formas alternativas). Num acesso direto ao detalhe com o
+cache vazio, isso soma uma requisição à lista, que fica cacheada para o resto da navegação.
 
 Os modelos estão definidos em [data-model.md](../data-model.md).
 
