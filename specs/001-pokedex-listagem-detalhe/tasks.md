@@ -330,3 +330,11 @@ Tarefa: "CadeiaEvolucao em src/componentes/CadeiaEvolucao.tsx"
 - Commits em pt-BR, uma linha, no formato Conventional Commits (Princípio V), ao fim de cada
   tarefa ou grupo lógico.
 - Pare em qualquer checkpoint para validar a história de forma independente.
+
+---
+
+## Phase 8: Convergence
+
+- [ ] T068 Medir com cache vazio e throttling "Fast 4G" das DevTools o tempo até a primeira página da listagem ficar utilizável e até um detalhe aparecer após o clique, registrar os valores em `specs/001-pokedex-listagem-detalhe/quickstart.md` e otimizar se passarem de 2 s per SC-002 (partial)
+- [X] T069 Reduzir o volume persistido da lista de espécies em `src/data/pokeapi.ts` e `src/data/normalizar.ts`, guardando no cache só `id` e `slug` e reconstruindo `nome`, `imagemUrl` e `imagemReservaUrl` na leitura (com teste em `tests/data/pokeapi.test.ts` de que a lista relida de um novo cache é igual à original) per plan: research.md item 8 (partial)
+- [X] T070 Revisar as adições não pedidas, o link "Pular para o conteúdo" em `src/App.tsx`, o título da aba por página em `src/paginas/Detalhe.tsx` e o `Cache-Control` imutável de `/assets/` em `nginx.conf`, registrando a justificativa em `specs/001-pokedex-listagem-detalhe/plan.md` ou removendo-as per plan (unrequested)

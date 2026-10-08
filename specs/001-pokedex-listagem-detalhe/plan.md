@@ -154,6 +154,17 @@ lógica de dados exigida pelo Princípio II e o isolamento da API exigido pelas 
 Técnicas. Os nomes de arquivos e pastas seguem pt-BR para acompanhar o domínio, o que o
 Princípio V permite (identificadores podem estar em inglês ou português).
 
+## Adições feitas na implementação
+
+Itens que não estavam na spec nem nas tarefas originais, mantidos por apoiarem princípios da
+constituição sem acrescentar dependências (revisados na T070):
+
+| Adição | Onde | Justificativa |
+|---|---|---|
+| Link "Pular para o conteúdo", visível só ao receber foco | `src/App.tsx` | Princípio IV: quem navega pelo teclado chega ao conteúdo sem atravessar o cabeçalho a cada página (WCAG 2.4.1) |
+| Título da aba por página (`<nome> \| Pokédex` no detalhe, `Pokédex` nas demais) | `src/paginas/Detalhe.tsx` | Princípio IV: leitores de tela anunciam o título ao trocar de página e o histórico do navegador fica identificável (WCAG 2.4.2) |
+| `Cache-Control` imutável de um ano para `/assets/` | `nginx.conf` | Desempenho em revisitas (SC-003). Seguro porque o Vite gera esses arquivos com hash no nome; `index.html` continua sem cache longo |
+
 ## Complexity Tracking
 
 Nenhuma violação da constituição a justificar.

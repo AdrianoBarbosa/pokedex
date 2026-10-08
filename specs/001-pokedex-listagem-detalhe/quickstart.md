@@ -85,3 +85,27 @@ Use o build de produção (`web`) com as DevTools abertas na aba Network, filtra
    Pokémon.
 4. Rode o Lighthouse (aba Accessibility) na listagem e no detalhe. Esperado: nenhuma falha de
    contraste ou de rótulo.
+
+### Desempenho (SC-002)
+
+Roteiro: DevTools → Network → "Disable cache" marcado, throttling "Fast 4G", Application →
+"Clear site data". Abra `/` e anote quando os cartões aparecem; depois clique em um Pokémon e
+anote quando o nome e os stats aparecem. Esperado: até 2 s em cada caso.
+
+Registro de 2026-10-08 (T068). O throttling não pôde ser aplicado pela automação do navegador
+usada na validação, então os valores abaixo são os tamanhos reais transferidos, medidos com
+`curl --compressed` e `gzip`, e uma estimativa a partir deles. A medição com throttling continua
+pendente.
+
+| Etapa | O que precisa chegar | Tamanho comprimido | Tempo real medido (banda larga) |
+|---|---|---|---|
+| Listagem utilizável | `index.html` + JS + CSS | 0,3 KB + 86,3 KB + 4,5 KB | servidor local |
+| | `pokemon-species?limit=100000` | 8,6 KB | 50 ms |
+| Tipos nos cartões (não bloqueia a listagem) | 18 × `type/*` em paralelo | 3 a 5 KB cada | cerca de 40 ms cada |
+| Detalhe após o clique | `pokemon/{id}` + `pokemon-species/{id}` em paralelo | 7,1 KB + 5,3 KB | cerca de 45 ms |
+| | `evolution-chain/{id}` | 0,5 KB | cerca de 40 ms |
+
+Estimativa conservadora com 1,6 Mbps e 150 ms de latência (pior que "Fast 4G"), incluindo
+abertura de conexão com o servidor e com `pokeapi.co`: cerca de 1,9 s até a listagem ficar
+utilizável e cerca de 0,4 s até o detalhe aparecer (conexão já aberta). As duas ficam dentro da
+meta de 2 s. As imagens carregam depois, sob demanda, e não entram nesse tempo.
