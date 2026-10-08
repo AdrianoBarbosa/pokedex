@@ -1,4 +1,5 @@
 import { criarCache } from "../../src/data/cache";
+import { ErroDeDados } from "../../src/data/modelos";
 import { criarPokeApi, idDaUrl } from "../../src/data/pokeapi";
 import { criarApiFalsa } from "../fixtures";
 
@@ -71,5 +72,67 @@ describe("carregarMapaDeTipos", () => {
     await api.carregarMapaDeTipos();
     expect(requisicoes).toHaveLength(19);
     expect(api.espiarMapaDeTipos()?.[4]).toEqual(["fire"]);
+  });
+});
+
+async function tipoDoErro(promessa: Promise<unknown>): Promise<string | undefined> {
+  try {
+    await promessa;
+  } catch (erro) {
+    return erro instanceof ErroDeDados ? erro.tipo : "outro";
+  }
+  return undefined;
+}
+
+describe("obterPokemon", () => {
+  it("faz 2 requisições com a lista de espécies em cache e nenhuma na segunda chamada", async () => {
+    const { api, requisicoes } = montar();
+    await api.listarEspecies();
+    requisicoes.length = 0;
+
+    const charmander = await api.obterPokemon(4);
+    await api.obterPokemon(4);
+
+    expect(charmander.nome).toBe("Charmander");
+    expect(requisicoes.sort()).toEqual(["pokemon-species/4", "pokemon/4"]);
+  });
+
+  it("faz 3 requisições num cache vazio (inclui a lista para validar o id)", async () => {
+    const { api, requisicoes } = montar();
+    await api.obterPokemon(4);
+    expect(requisicoes.sort()).toEqual(["pokemon-species/4", "pokemon-species?limit=100000", "pokemon/4"]);
+  });
+
+  it.each([0, -1, 1.5, 46, 10034, Number.NaN])(
+    "rejeita o id %s com nao-encontrado sem requisitar o Pokémon",
+    async (id) => {
+      const { api, requisicoes } = montar();
+      expect(await tipoDoErro(api.obterPokemon(id))).toBe("nao-encontrado");
+      expect(requisicoes).toEqual(["pokemon-species?limit=100000"]);
+    },
+  );
+
+  it("converte um 404 da API em nao-encontrado", async () => {
+    const { api } = montar();
+    expect(await tipoDoErro(api.obterPokemon(5))).toBe("nao-encontrado");
+  });
+
+  it("expõe o detalhe em cache de forma síncrona", async () => {
+    const { api } = montar();
+    expect(api.espiarPokemon(4)).toBeUndefined();
+    await api.obterPokemon(4);
+    expect(api.espiarPokemon(4)?.nome).toBe("Charmander");
+  });
+});
+
+describe("obterCadeiaEvolucao", () => {
+  it("faz 1 requisição e reaproveita o cache", async () => {
+    const { api, requisicoes } = montar();
+    const raiz = await api.obterCadeiaEvolucao(2);
+    await api.obterCadeiaEvolucao(2);
+
+    expect(raiz.pokemon.nome).toBe("Charmander");
+    expect(requisicoes).toEqual(["evolution-chain/2"]);
+    expect(api.espiarCadeia(2)?.evoluiPara).toHaveLength(1);
   });
 });

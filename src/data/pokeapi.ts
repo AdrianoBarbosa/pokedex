@@ -1,7 +1,7 @@
 import { criarCache, type Cache } from "./cache";
 import { criarBuscarJson, type BuscarJson } from "./http";
-import type { MapaDeTipos, PokemonResumo } from "./modelos";
-import { montarMapaDeTipos, normalizarListaEspecies } from "./normalizar";
+import { ErroDeDados, type MapaDeTipos, type NoEvolucao, type PokemonDetalhe, type PokemonResumo } from "./modelos";
+import { montarMapaDeTipos, normalizarCadeia, normalizarListaEspecies, normalizarPokemon } from "./normalizar";
 import { LISTA_TIPOS } from "./tipos";
 
 export { idDaUrl } from "./normalizar";
@@ -34,9 +34,35 @@ export function criarPokeApi({ buscarJson, cache }: DependenciasPokeApi) {
     });
   }
 
+  /**
+   * 2 requisições em paralelo (`pokemon` e `pokemon-species`), mais a lista de espécies se ainda não
+   * estiver em cache. A lista valida o número antes de qualquer requisição do Pokémon (FR-017).
+   */
+  async function obterPokemon(id: number): Promise<PokemonDetalhe> {
+    const especies = await listarEspecies();
+    if (!Number.isInteger(id) || id < 1 || id > especies.length) {
+      throw new ErroDeDados("nao-encontrado", `Pokémon ${id} fora da Pokédex Nacional`);
+    }
+    return cache.obter(`pokemon/${id}`, async () => {
+      const [pokemon, especie] = await Promise.all([
+        buscarJson(`${URL_BASE}pokemon/${id}`),
+        buscarJson(`${URL_BASE}pokemon-species/${id}`),
+      ]);
+      return normalizarPokemon(pokemon, especie);
+    });
+  }
+
+  function obterCadeiaEvolucao(id: number): Promise<NoEvolucao> {
+    return buscarNormalizado(`evolution-chain/${id}`, `evolution-chain/${id}`, normalizarCadeia);
+  }
+
   return {
     listarEspecies,
     carregarMapaDeTipos,
+    obterPokemon,
+    obterCadeiaEvolucao,
+    espiarPokemon: (id: number) => cache.espiar<PokemonDetalhe>(`pokemon/${id}`),
+    espiarCadeia: (id: number) => cache.espiar<NoEvolucao>(`evolution-chain/${id}`),
     espiarEspecies: () => cache.espiar<PokemonResumo[]>("pokemon-species"),
     espiarMapaDeTipos: () => cache.espiar<MapaDeTipos>("mapa-de-tipos"),
   };

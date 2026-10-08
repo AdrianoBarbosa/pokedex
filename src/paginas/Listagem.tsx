@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 import { CartaoPokemon } from "../componentes/CartaoPokemon";
 import { Anuncio, Carregando, Erro } from "../componentes/Estado";
 import { Paginacao } from "../componentes/Paginacao";
@@ -16,6 +16,7 @@ function tiposDoPokemon(id: number, mapa: MapaDeTipos | undefined, mapaFalhou: b
 
 export function Listagem() {
   const [parametros, setParametros] = useSearchParams();
+  const { search: origem } = useLocation();
   const estado = lerEstadoListagem(parametros);
 
   // A lista aparece assim que as espécies chegam; os tipos preenchem os cartões depois (research.md, item 5).
@@ -73,7 +74,11 @@ export function Listagem() {
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {resultado.itens.map((pokemon) => (
               <li key={pokemon.id}>
-                <CartaoPokemon pokemon={pokemon} tipos={tiposDoPokemon(pokemon.id, mapa.dados, mapaFalhou)} />
+                <CartaoPokemon
+                  pokemon={pokemon}
+                  tipos={tiposDoPokemon(pokemon.id, mapa.dados, mapaFalhou)}
+                  origem={origem}
+                />
               </li>
             ))}
           </ul>

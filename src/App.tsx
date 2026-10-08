@@ -1,4 +1,5 @@
 import { Link, Route, Routes } from "react-router";
+import { Detalhe } from "./paginas/Detalhe";
 import { Listagem } from "./paginas/Listagem";
 import { NaoEncontrada } from "./paginas/NaoEncontrada";
 
@@ -24,6 +25,7 @@ export default function App() {
       <main id="conteudo" className="mx-auto max-w-6xl px-4 py-6">
         <Routes>
           <Route path="/" element={<Listagem />} />
+          <Route path="/pokemon/:id" element={<Detalhe />} />
           <Route path="*" element={<NaoEncontrada />} />
         </Routes>
       </main>

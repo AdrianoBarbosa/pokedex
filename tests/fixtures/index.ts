@@ -2,6 +2,14 @@
 // Os testes nunca acessam a rede (Princípio II).
 import { ErroDeDados } from "../../src/data/modelos";
 import { URL_BASE } from "../../src/data/pokeapi";
+import cadeiaCharmander from "./evolution-chain-charmander.json";
+import cadeiaEevee from "./evolution-chain-eevee.json";
+import cadeiaOddish from "./evolution-chain-oddish.json";
+import cadeiaTauros from "./evolution-chain-tauros.json";
+import pokemon4 from "./pokemon-4.json";
+import pokemonSemArte from "./pokemon-sem-arte.json";
+import especie25 from "./pokemon-species-25.json";
+import especie4 from "./pokemon-species-4.json";
 import listaEspecies from "./pokemon-species-lista.json";
 
 const arquivosDeTipos = import.meta.glob<unknown>("./tipos/*.json", { eager: true, import: "default" });
@@ -10,12 +18,27 @@ export const respostasPorTipo: Record<string, unknown> = Object.fromEntries(
   Object.entries(arquivosDeTipos).map(([caminho, json]) => [/([\w-]+)\.json$/.exec(caminho)?.[1], json]),
 );
 
-export { listaEspecies };
+export {
+  cadeiaCharmander,
+  cadeiaEevee,
+  cadeiaOddish,
+  cadeiaTauros,
+  especie25,
+  especie4,
+  listaEspecies,
+  pokemon4,
+  pokemonSemArte,
+};
 
 /** Respostas da API falsa: caminho relativo a URL_BASE → JSON. */
 export function respostasBase(): Record<string, unknown> {
   return {
     "pokemon-species?limit=100000": listaEspecies,
+    "pokemon/4": pokemon4,
+    "pokemon-species/4": especie4,
+    "pokemon/25": pokemonSemArte,
+    "pokemon-species/25": especie25,
+    "evolution-chain/2": cadeiaCharmander,
     ...Object.fromEntries(Object.entries(respostasPorTipo).map(([tipo, json]) => [`type/${tipo}`, json])),
   };
 }
