@@ -25,7 +25,7 @@ Sem Docker: `npm ci` e depois `npm run dev`.
 | Testes | `docker compose run --rm dev npm test` | Todos passando, sem acesso à rede |
 | Tipagem | `docker compose run --rm dev npm run typecheck` | Sem erros |
 | Lint (inclui acessibilidade) | `docker compose run --rm dev npm run lint` | Sem erros |
-| Requisições só na camada de dados | `grep -rn "fetch(" src --include=*.ts --include=*.tsx` | Uma única ocorrência, no módulo de rede da camada de dados |
+| Requisições só na camada de dados | `grep -rn "fetch(" src --include="*.ts" --include="*.tsx"` | Uma única ocorrência, no módulo de rede da camada de dados |
 
 ## Cenários de validação manual
 

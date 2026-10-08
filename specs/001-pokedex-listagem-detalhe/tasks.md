@@ -199,12 +199,38 @@ e ver a mensagem de nenhum resultado; limpar e ver a listagem completa.
 
 **Propósito**: quality gates da constituição e validação de ponta a ponta.
 
-- [ ] T062 [P] Criar `README.md` em pt-BR com descrição do projeto, stack, comandos do Docker Compose e de testes, e link para [quickstart.md](./quickstart.md) e para a constituição (Princípio V)
-- [ ] T063 Revisar layout responsivo e foco em `src/App.tsx`, `src/paginas/*.tsx` e `src/componentes/*.tsx`: grade da listagem com 2 colunas no celular e até 5 no desktop, sem rolagem horizontal em 360 px de largura, foco visível em todos os links, botões, campo e seletor (FR-023)
+- [X] T062 [P] Criar `README.md` em pt-BR com descrição do projeto, stack, comandos do Docker Compose e de testes, e link para [quickstart.md](./quickstart.md) e para a constituição (Princípio V)
+- [X] T063 Revisar layout responsivo e foco em `src/App.tsx`, `src/paginas/*.tsx` e `src/componentes/*.tsx`: grade da listagem com 2 colunas no celular e até 5 no desktop, sem rolagem horizontal em 360 px de largura, foco visível em todos os links, botões, campo e seletor (FR-023)
 - [ ] T064 Rodar `docker compose run --rm dev npm test`, `docker compose run --rm dev npm run typecheck` e `docker compose run --rm dev npm run lint` e corrigir todas as falhas
-- [ ] T065 Confirmar com `grep -rn "fetch(" src --include=*.ts --include=*.tsx` que a única ocorrência está em `src/data/http.ts` (Princípio III)
+- [X] T065 Confirmar com `grep -rn "fetch(" src --include="*.ts" --include="*.tsx"` que a única ocorrência está em `src/data/http.ts` (Princípio III)
 - [ ] T066 Subir `docker compose up --build web` e executar todos os cenários manuais de [quickstart.md](./quickstart.md), incluindo erros, fair use (aba Network) e acessibilidade com teclado, leitor de tela e Lighthouse
-- [ ] T067 Conferir a checklist de conclusão da seção "Fluxo de Desenvolvimento e Quality Gates" de `.specify/memory/constitution.md` e registrar pendências, se houver, em `specs/001-pokedex-listagem-detalhe/tasks.md`
+- [X] T067 Conferir a checklist de conclusão da seção "Fluxo de Desenvolvimento e Quality Gates" de `.specify/memory/constitution.md` e registrar pendências, se houver, em `specs/001-pokedex-listagem-detalhe/tasks.md`
+
+### Pendências registradas na conferência da constituição (T067), em 2026-10-08
+
+Quality gates da constituição:
+
+- ✅ Testes de lógica de dados passando: 147 testes (`npm test`), sem acesso à rede.
+- ✅ Nenhuma chamada à PokeAPI fora da camada de cache: única ocorrência de `fetch(` em
+  `src/data/http.ts` (T065).
+- ✅ Documentação da feature em pt-BR, incluindo o `README.md` (T062).
+- ⚠️ Acessibilidade básica: HTML semântico, rótulos, texto alternativo, nomes de tipo, região
+  `aria-live`, `role="alert"` e foco visível conferidos no navegador (Chrome); contraste AA
+  garantido por teste; sem rolagem horizontal em 360 px. Falta a parte manual abaixo.
+
+Pendente (T064 e T066 ficam abertas até isso ser feito):
+
+- T064: os comandos rodaram com sucesso localmente (Node 24, mesma versão da imagem), mas não
+  dentro do Docker, porque o daemon do Docker (e o do Podman) não estava em execução nesta máquina.
+- T066: validado com `vite preview` sobre o build de produção, não com o serviço `web` (Nginx).
+  Confirmados no navegador: listagem e paginação, 19 requisições na primeira visita e zero na
+  revisita após recarregar, `?pagina=999` ajustado para a última página, detalhe com 3
+  requisições, navegação pela cadeia sem nova requisição da cadeia, "Voltar à listagem"
+  preservando busca e filtro, Eevee com 8 ramificações, Tauros sem evolução, `/pokemon/99999`
+  sem requisições do Pokémon, busca com espaços ("mr mime"), estado vazio, filtro combinado com
+  busca e "voltar" do navegador restaurando o filtro. Faltam: fallback de rotas do Nginx ao
+  recarregar `/pokemon/25`, cenário offline com "Tentar novamente", bloqueio da arte oficial,
+  navegação completa só com teclado, leitor de tela e Lighthouse.
 
 ---
 
