@@ -99,7 +99,7 @@ confirmadas com o usuário antes do plano:
 
 - **Decisão**: módulo próprio, pequeno, com três níveis:
   1. **Memória**: `Map<chave, Promise>` deduplica requisições simultâneas ao mesmo recurso;
-  2. **Persistente**: `localStorage` com prefixo versionado (`pokedex:v1:`), guardando apenas
+  2. **Persistente**: `localStorage` com prefixo versionado (`pokedex:v2:`; a v1 guardava a lista de espécies completa e foi substituída pela forma compacta descrita em data-model.md), guardando apenas
      os dados já normalizados (não a resposta bruta), com data de gravação e validade de 30 dias;
   3. **Rede**: `fetch` para a PokeAPI, chamado em um único ponto do código.
 - **Regras**: falhas não são cacheadas (a promise é removida, permitindo "Tentar novamente");

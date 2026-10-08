@@ -124,9 +124,14 @@ Formato persistido no armazenamento do navegador.
 
 | Campo | Tipo | Regra |
 |---|---|---|
-| chave | texto | `pokedex:v1:<recurso>` (ex.: `pokedex:v1:pokemon/25`) |
+| chave | texto | `pokedex:v2:<recurso>` (ex.: `pokedex:v2:pokemon/25`) |
 | `salvoEm` | número | Momento da gravação |
-| `dados` | modelo normalizado | Um dos modelos acima |
+| `dados` | modelo normalizado | Um dos modelos acima, exceto a lista de espécies (ver abaixo) |
 
 Regras: entradas com mais de 30 dias são ignoradas e substituídas. A troca do prefixo de versão
-invalida todo o cache antigo. Falhas nunca são gravadas.
+invalida todo o cache antigo, e as entradas de versões anteriores são removidas do armazenamento
+ao criar o cache. Falhas nunca são gravadas.
+
+A lista de espécies (chave `especies`) é persistida em forma compacta, só com pares
+`[id, slug]`. Nome e URLs de imagem são derivados na leitura, já que dependem apenas desses dois
+campos. Isso reduz o volume de cerca de 260 KB para cerca de 20 KB.

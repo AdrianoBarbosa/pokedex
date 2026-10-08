@@ -1,4 +1,6 @@
-const PREFIXO = "pokedex:v1:";
+const PREFIXO_DO_SISTEMA = "pokedex:";
+// Trocar a versão invalida todo o cache anterior (data-model.md, EntradaDeCache).
+const PREFIXO = `${PREFIXO_DO_SISTEMA}v2:`;
 const VALIDADE_MS = 30 * 24 * 60 * 60 * 1000;
 
 export interface Cache {
@@ -26,12 +28,28 @@ function armazenamentoPadrao(): Storage | null {
   }
 }
 
+/** Remove entradas de versões anteriores do cache, para não ocupar espaço à toa no armazenamento. */
+function limparVersoesAntigas(armazenamento: Storage): void {
+  try {
+    const antigas: string[] = [];
+    for (let indice = 0; indice < armazenamento.length; indice++) {
+      const chave = armazenamento.key(indice);
+      if (chave?.startsWith(PREFIXO_DO_SISTEMA) && !chave.startsWith(PREFIXO)) antigas.push(chave);
+    }
+    antigas.forEach((chave) => armazenamento.removeItem(chave));
+  } catch {
+    // Armazenamento indisponível: nada a limpar.
+  }
+}
+
 function ehEntradaDeCache(valor: unknown): valor is EntradaDeCache {
   return typeof valor === "object" && valor !== null && "dados" in valor && "salvoEm" in valor
     && typeof valor.salvoEm === "number";
 }
 
 export function criarCache({ armazenamento = armazenamentoPadrao(), agora = Date.now }: OpcoesCache = {}): Cache {
+  if (armazenamento) limparVersoesAntigas(armazenamento);
+
   const valores = new Map<string, unknown>();
   const promessas = new Map<string, Promise<unknown>>();
 

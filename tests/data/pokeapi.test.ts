@@ -1,7 +1,7 @@
 import { criarCache } from "../../src/data/cache";
 import { ErroDeDados } from "../../src/data/modelos";
 import { criarPokeApi, idDaUrl } from "../../src/data/pokeapi";
-import { criarApiFalsa } from "../fixtures";
+import { armazenamentoEmMemoria, criarApiFalsa } from "../fixtures";
 
 function montar(respostas?: Record<string, unknown>) {
   const { buscarJson, requisicoes } = criarApiFalsa(respostas);
@@ -34,6 +34,30 @@ describe("listarEspecies", () => {
     const { api, requisicoes } = montar();
     await Promise.all([api.listarEspecies(), api.listarEspecies()]);
     expect(requisicoes).toHaveLength(1);
+  });
+
+  it("persiste só número e slug e reconstrói a mesma lista em um novo cache", async () => {
+    const armazenamento = armazenamentoEmMemoria();
+    const primeira = criarApiFalsa();
+    const original = await criarPokeApi({ buscarJson: primeira.buscarJson, cache: criarCache({ armazenamento }) })
+      .listarEspecies();
+
+    const gravado = JSON.parse(armazenamento.getItem("pokedex:v2:especies") ?? "null");
+    expect(gravado.dados[0]).toEqual([1, "bulbasaur"]);
+    expect(JSON.stringify(gravado.dados)).not.toContain("https://");
+
+    const segunda = criarApiFalsa();
+    const relida = criarPokeApi({ buscarJson: segunda.buscarJson, cache: criarCache({ armazenamento }) });
+    expect(relida.espiarEspecies()).toEqual(original);
+    expect(await relida.listarEspecies()).toEqual(original);
+    expect(segunda.requisicoes).toEqual([]);
+  });
+
+  it("devolve a mesma referência da lista entre chamadas", async () => {
+    const { api } = montar();
+    const lista = await api.listarEspecies();
+    expect(api.espiarEspecies()).toBe(lista);
+    expect(await api.listarEspecies()).toBe(lista);
   });
 
   it("expõe a lista em cache de forma síncrona", async () => {

@@ -54,3 +54,18 @@ export function criarApiFalsa(respostas: Record<string, unknown> = respostasBase
   };
   return { buscarJson, requisicoes };
 }
+
+/** `Storage` em memória, para testar a persistência sem depender do `localStorage` do jsdom. */
+export function armazenamentoEmMemoria(): Storage {
+  const dados = new Map<string, string>();
+  return {
+    get length() {
+      return dados.size;
+    },
+    clear: () => dados.clear(),
+    getItem: (chave) => dados.get(chave) ?? null,
+    key: (indice) => [...dados.keys()][indice] ?? null,
+    removeItem: (chave) => void dados.delete(chave),
+    setItem: (chave, valor) => void dados.set(chave, valor),
+  };
+}

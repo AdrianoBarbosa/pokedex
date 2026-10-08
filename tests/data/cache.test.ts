@@ -1,21 +1,9 @@
 import { criarCache } from "../../src/data/cache";
 import type { MapaDeTipos } from "../../src/data/modelos";
+import { armazenamentoEmMemoria } from "../fixtures";
 
 const UM_DIA = 24 * 60 * 60 * 1000;
 
-function armazenamentoEmMemoria(): Storage {
-  const dados = new Map<string, string>();
-  return {
-    get length() {
-      return dados.size;
-    },
-    clear: () => dados.clear(),
-    getItem: (chave) => dados.get(chave) ?? null,
-    key: (indice) => [...dados.keys()][indice] ?? null,
-    removeItem: (chave) => void dados.delete(chave),
-    setItem: (chave, valor) => void dados.set(chave, valor),
-  };
-}
 
 describe("criarCache", () => {
   it("(a) executa carregar uma única vez para chamadas simultâneas", async () => {
@@ -47,7 +35,7 @@ describe("criarCache", () => {
     const agora = () => 1_000;
     await criarCache({ armazenamento, agora }).obter("pokemon/25", async () => ({ nome: "Pikachu" }));
 
-    const gravado = JSON.parse(armazenamento.getItem("pokedex:v1:pokemon/25") ?? "null");
+    const gravado = JSON.parse(armazenamento.getItem("pokedex:v2:pokemon/25") ?? "null");
     expect(gravado).toEqual({ salvoEm: 1_000, dados: { nome: "Pikachu" } });
 
     const carregar = vi.fn(async () => ({ nome: "outro" }));
@@ -85,7 +73,7 @@ describe("criarCache", () => {
       .mockResolvedValueOnce("recuperado");
 
     await expect(cache.obter("recurso", carregar)).rejects.toThrow("falhou");
-    expect(armazenamento.getItem("pokedex:v1:recurso")).toBeNull();
+    expect(armazenamento.getItem("pokedex:v2:recurso")).toBeNull();
     expect(cache.espiar("recurso")).toBeUndefined();
 
     await expect(cache.obter("recurso", carregar)).resolves.toBe("recuperado");
@@ -122,7 +110,7 @@ describe("criarCache", () => {
 
   it("(e) ignora entradas corrompidas no armazenamento", async () => {
     const armazenamento = armazenamentoEmMemoria();
-    armazenamento.setItem("pokedex:v1:recurso", "{não é json");
+    armazenamento.setItem("pokedex:v2:recurso", "{não é json");
     const cache = criarCache({ armazenamento });
 
     expect(cache.espiar("recurso")).toBeUndefined();
@@ -154,5 +142,20 @@ describe("criarCache", () => {
     const relido = criarCache({ armazenamento }).espiar<MapaDeTipos>("mapa-de-tipos");
     expect(relido).toEqual(mapa);
     expect(relido?.[1]).toEqual(["grass", "poison"]);
+  });
+
+  it("(h) remove entradas de versões anteriores do cache e preserva chaves de outros sistemas", () => {
+    const armazenamento = armazenamentoEmMemoria();
+    armazenamento.setItem("pokedex:v1:pokemon-species", "[]");
+    armazenamento.setItem("pokedex:v1:pokemon/25", "{}");
+    armazenamento.setItem("pokedex:v2:pokemon/25", JSON.stringify({ salvoEm: Date.now(), dados: "atual" }));
+    armazenamento.setItem("outro-sistema", "mantido");
+
+    const cache = criarCache({ armazenamento });
+
+    expect(armazenamento.getItem("pokedex:v1:pokemon-species")).toBeNull();
+    expect(armazenamento.getItem("pokedex:v1:pokemon/25")).toBeNull();
+    expect(armazenamento.getItem("outro-sistema")).toBe("mantido");
+    expect(cache.espiar("pokemon/25")).toBe("atual");
   });
 });
