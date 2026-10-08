@@ -1,0 +1,138 @@
+{
+  "name": "poison",
+  "pokemon": [
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "bulbasaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/1/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "ivysaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/2/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "venusaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/3/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "weedle",
+        "url": "https://pokeapi.co/api/v2/pokemon/13/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "kakuna",
+        "url": "https://pokeapi.co/api/v2/pokemon/14/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "beedrill",
+        "url": "https://pokeapi.co/api/v2/pokemon/15/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "ekans",
+        "url": "https://pokeapi.co/api/v2/pokemon/23/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "arbok",
+        "url": "https://pokeapi.co/api/v2/pokemon/24/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "nidoran-f",
+        "url": "https://pokeapi.co/api/v2/pokemon/29/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "nidorina",
+        "url": "https://pokeapi.co/api/v2/pokemon/30/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "nidoqueen",
+        "url": "https://pokeapi.co/api/v2/pokemon/31/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "nidoran-m",
+        "url": "https://pokeapi.co/api/v2/pokemon/32/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "nidorino",
+        "url": "https://pokeapi.co/api/v2/pokemon/33/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "nidoking",
+        "url": "https://pokeapi.co/api/v2/pokemon/34/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "zubat",
+        "url": "https://pokeapi.co/api/v2/pokemon/41/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "golbat",
+        "url": "https://pokeapi.co/api/v2/pokemon/42/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "oddish",
+        "url": "https://pokeapi.co/api/v2/pokemon/43/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "gloom",
+        "url": "https://pokeapi.co/api/v2/pokemon/44/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "vileplume",
+        "url": "https://pokeapi.co/api/v2/pokemon/45/"
+      }
+    }
+  ]
+}

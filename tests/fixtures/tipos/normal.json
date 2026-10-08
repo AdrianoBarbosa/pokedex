@@ -1,0 +1,68 @@
+{
+  "name": "normal",
+  "pokemon": [
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "pidgey",
+        "url": "https://pokeapi.co/api/v2/pokemon/16/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "pidgeotto",
+        "url": "https://pokeapi.co/api/v2/pokemon/17/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "pidgeot",
+        "url": "https://pokeapi.co/api/v2/pokemon/18/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "rattata",
+        "url": "https://pokeapi.co/api/v2/pokemon/19/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "raticate",
+        "url": "https://pokeapi.co/api/v2/pokemon/20/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "spearow",
+        "url": "https://pokeapi.co/api/v2/pokemon/21/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "fearow",
+        "url": "https://pokeapi.co/api/v2/pokemon/22/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "jigglypuff",
+        "url": "https://pokeapi.co/api/v2/pokemon/39/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "wigglytuff",
+        "url": "https://pokeapi.co/api/v2/pokemon/40/"
+      }
+    }
+  ]
+}

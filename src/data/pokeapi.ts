@@ -1,15 +1,12 @@
 import { criarCache, type Cache } from "./cache";
 import { criarBuscarJson, type BuscarJson } from "./http";
-import { ErroDeDados } from "./modelos";
+import type { MapaDeTipos, PokemonResumo } from "./modelos";
+import { montarMapaDeTipos, normalizarListaEspecies } from "./normalizar";
+import { LISTA_TIPOS } from "./tipos";
+
+export { idDaUrl } from "./normalizar";
 
 export const URL_BASE = "https://pokeapi.co/api/v2/";
-
-/** Extrai o último segmento numérico de uma URL da PokeAPI (ex.: `.../pokemon-species/25/` → 25). */
-export function idDaUrl(url: string): number {
-  const encontrado = /\/(\d+)\/?$/.exec(url);
-  if (!encontrado?.[1]) throw new ErroDeDados("resposta-invalida", `URL sem id numérico: ${url}`);
-  return Number(encontrado[1]);
-}
 
 interface DependenciasPokeApi {
   buscarJson: BuscarJson;
@@ -22,7 +19,27 @@ export function criarPokeApi({ buscarJson, cache }: DependenciasPokeApi) {
     return cache.obter(chave, async () => normalizar(await buscarJson(URL_BASE + caminho)));
   }
 
-  return { buscarNormalizado };
+  function listarEspecies(): Promise<PokemonResumo[]> {
+    return buscarNormalizado("pokemon-species", "pokemon-species?limit=100000", normalizarListaEspecies);
+  }
+
+  /** 18 requisições de tipo em paralelo, mais a lista de espécies se ainda não estiver em cache. */
+  function carregarMapaDeTipos(): Promise<MapaDeTipos> {
+    return cache.obter("mapa-de-tipos", async () => {
+      const [especies, respostas] = await Promise.all([
+        listarEspecies(),
+        Promise.all(LISTA_TIPOS.map(async (tipo) => [tipo, await buscarJson(`${URL_BASE}type/${tipo}`)] as const)),
+      ]);
+      return montarMapaDeTipos(Object.fromEntries(respostas), especies.length);
+    });
+  }
+
+  return {
+    listarEspecies,
+    carregarMapaDeTipos,
+    espiarEspecies: () => cache.espiar<PokemonResumo[]>("pokemon-species"),
+    espiarMapaDeTipos: () => cache.espiar<MapaDeTipos>("mapa-de-tipos"),
+  };
 }
 
 export type PokeApi = ReturnType<typeof criarPokeApi>;

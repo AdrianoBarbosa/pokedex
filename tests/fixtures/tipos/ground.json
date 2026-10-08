@@ -1,0 +1,33 @@
+{
+  "name": "ground",
+  "pokemon": [
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "sandshrew",
+        "url": "https://pokeapi.co/api/v2/pokemon/27/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "sandslash",
+        "url": "https://pokeapi.co/api/v2/pokemon/28/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "nidoqueen",
+        "url": "https://pokeapi.co/api/v2/pokemon/31/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "nidoking",
+        "url": "https://pokeapi.co/api/v2/pokemon/34/"
+      }
+    }
+  ]
+}

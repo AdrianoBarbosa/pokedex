@@ -1,0 +1,54 @@
+{
+  "name": "grass",
+  "pokemon": [
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "bulbasaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/1/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "ivysaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/2/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "venusaur",
+        "url": "https://pokeapi.co/api/v2/pokemon/3/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "oddish",
+        "url": "https://pokeapi.co/api/v2/pokemon/43/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "gloom",
+        "url": "https://pokeapi.co/api/v2/pokemon/44/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "vileplume",
+        "url": "https://pokeapi.co/api/v2/pokemon/45/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "venusaur-mega",
+        "url": "https://pokeapi.co/api/v2/pokemon/10033/"
+      }
+    }
+  ]
+}

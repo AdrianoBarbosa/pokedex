@@ -1,4 +1,5 @@
 import { Link, Route, Routes } from "react-router";
+import { Listagem } from "./paginas/Listagem";
 import { NaoEncontrada } from "./paginas/NaoEncontrada";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
       </header>
       <main id="conteudo" className="mx-auto max-w-6xl px-4 py-6">
         <Routes>
+          <Route path="/" element={<Listagem />} />
           <Route path="*" element={<NaoEncontrada />} />
         </Routes>
       </main>

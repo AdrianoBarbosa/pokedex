@@ -1,0 +1,68 @@
+{
+  "name": "flying",
+  "pokemon": [
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "charizard",
+        "url": "https://pokeapi.co/api/v2/pokemon/6/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "butterfree",
+        "url": "https://pokeapi.co/api/v2/pokemon/12/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "pidgey",
+        "url": "https://pokeapi.co/api/v2/pokemon/16/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "pidgeotto",
+        "url": "https://pokeapi.co/api/v2/pokemon/17/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "pidgeot",
+        "url": "https://pokeapi.co/api/v2/pokemon/18/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "spearow",
+        "url": "https://pokeapi.co/api/v2/pokemon/21/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "fearow",
+        "url": "https://pokeapi.co/api/v2/pokemon/22/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "zubat",
+        "url": "https://pokeapi.co/api/v2/pokemon/41/"
+      }
+    },
+    {
+      "slot": 2,
+      "pokemon": {
+        "name": "golbat",
+        "url": "https://pokeapi.co/api/v2/pokemon/42/"
+      }
+    }
+  ]
+}

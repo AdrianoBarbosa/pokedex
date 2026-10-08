@@ -1,0 +1,47 @@
+{
+  "name": "bug",
+  "pokemon": [
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "caterpie",
+        "url": "https://pokeapi.co/api/v2/pokemon/10/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "metapod",
+        "url": "https://pokeapi.co/api/v2/pokemon/11/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "butterfree",
+        "url": "https://pokeapi.co/api/v2/pokemon/12/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "weedle",
+        "url": "https://pokeapi.co/api/v2/pokemon/13/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "kakuna",
+        "url": "https://pokeapi.co/api/v2/pokemon/14/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "beedrill",
+        "url": "https://pokeapi.co/api/v2/pokemon/15/"
+      }
+    }
+  ]
+}

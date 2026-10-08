@@ -1,0 +1,19 @@
+{
+  "name": "electric",
+  "pokemon": [
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "pikachu",
+        "url": "https://pokeapi.co/api/v2/pokemon/25/"
+      }
+    },
+    {
+      "slot": 1,
+      "pokemon": {
+        "name": "raichu",
+        "url": "https://pokeapi.co/api/v2/pokemon/26/"
+      }
+    }
+  ]
+}
