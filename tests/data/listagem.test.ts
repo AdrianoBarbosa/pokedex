@@ -1,7 +1,7 @@
 import { filtrarEPaginar, normalizarTermo } from "../../src/data/listagem";
-import type { EstadoListagem } from "../../src/data/modelos";
-import { normalizarListaEspecies, resumoDePokemon } from "../../src/data/normalizar";
-import { listaEspecies } from "../fixtures";
+import type { EstadoListagem, MapaDeTipos } from "../../src/data/modelos";
+import { montarMapaDeTipos, normalizarListaEspecies, resumoDePokemon } from "../../src/data/normalizar";
+import { listaEspecies, respostasPorTipo } from "../fixtures";
 
 const especies = normalizarListaEspecies(listaEspecies);
 
@@ -102,5 +102,37 @@ describe("filtrarEPaginar: busca por nome", () => {
 
   it("busca vazia ou só com espaços não filtra", () => {
     expect(filtrarEPaginar(especies, null, estado({ busca: "   " })).totalItens).toBe(45);
+  });
+});
+
+describe("filtrarEPaginar: filtro por tipo", () => {
+  const mapa = montarMapaDeTipos(respostasPorTipo, 45);
+  const ids = (parcial: Partial<EstadoListagem>, mapaDeTipos: MapaDeTipos | null = mapa) =>
+    filtrarEPaginar(especies, mapaDeTipos, estado(parcial)).itens.map((p) => p.id);
+
+  it("devolve só Pokémon que têm o tipo, em ordem de id", () => {
+    expect(ids({ tipo: "fire" })).toEqual([4, 5, 6, 37, 38]);
+  });
+
+  it("considera o tipo secundário", () => {
+    expect(ids({ tipo: "flying" })).toEqual([6, 12, 16, 17, 18, 21, 22, 41, 42]);
+  });
+
+  it("combina tipo e busca exigindo os dois", () => {
+    expect(ids({ tipo: "water", busca: "squi" })).toEqual([7]);
+    expect(ids({ tipo: "poison", busca: "nido" })).toEqual([29, 30, 31, 32, 33, 34]);
+  });
+
+  it("ignora o filtro de tipo enquanto o mapa não carregou", () => {
+    expect(filtrarEPaginar(especies, null, estado({ tipo: "fire" })).totalItens).toBe(45);
+  });
+
+  it("devolve totalItens 0 quando a combinação não tem resultado", () => {
+    expect(filtrarEPaginar(especies, mapa, estado({ tipo: "fire", busca: "pika" })).totalItens).toBe(0);
+    expect(filtrarEPaginar(especies, mapa, estado({ tipo: "dragon" })).totalItens).toBe(0);
+  });
+
+  it("ajusta a página dentro dos resultados filtrados", () => {
+    expect(filtrarEPaginar(especies, mapa, estado({ tipo: "fire", pagina: 3 })).pagina).toBe(1);
   });
 });

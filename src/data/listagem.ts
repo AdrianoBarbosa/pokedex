@@ -14,15 +14,19 @@ export function normalizarTermo(texto: string): string {
 /** Aplica busca, filtro de tipo e paginação sobre a lista de espécies, sem acesso à rede. */
 export function filtrarEPaginar(
   especies: readonly PokemonResumo[],
-  _mapaDeTipos: MapaDeTipos | null,
+  mapaDeTipos: MapaDeTipos | null,
   estado: EstadoListagem,
 ): ResultadoListagem {
   const termo = normalizarTermo(estado.busca);
+  // Sem o mapa de tipos ainda carregado, o filtro de tipo é ignorado (a interface mantém o seletor desabilitado).
+  const tipo = mapaDeTipos ? estado.tipo : null;
+
   const filtradas = especies
     .filter(
       (pokemon) =>
         termo === "" || normalizarTermo(pokemon.slug).includes(termo) || normalizarTermo(pokemon.nome).includes(termo),
     )
+    .filter((pokemon) => tipo === null || (mapaDeTipos?.[pokemon.id]?.includes(tipo) ?? false))
     .sort((a, b) => a.id - b.id);
 
   const totalItens = filtradas.length;

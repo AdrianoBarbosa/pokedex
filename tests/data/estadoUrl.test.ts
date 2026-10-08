@@ -46,3 +46,25 @@ describe("estado da listagem na URL: busca", () => {
     expect(escrever({ pagina: 2, busca: "char", tipo: null })).toBe("busca=char&pagina=2");
   });
 });
+
+describe("estado da listagem na URL: tipo", () => {
+  it("lê um tipo válido", () => {
+    expect(ler("tipo=water").tipo).toBe("water");
+  });
+
+  it.each(["banana", "shadow", "unknown", "stellar", "FIRE", ""])("trata tipo=%s como todos os tipos", (valor) => {
+    expect(ler(`tipo=${valor}`).tipo).toBeNull();
+  });
+
+  it("omite o tipo nulo", () => {
+    expect(escrever({ pagina: 1, busca: "", tipo: null })).toBe("");
+    expect(escrever({ pagina: 1, busca: "", tipo: "fire" })).toBe("tipo=fire");
+  });
+
+  it("lê e escreve os três campos combinados", () => {
+    const completo = { pagina: 2, busca: "squi", tipo: "water" as const };
+    expect(ler("busca=squi&tipo=water&pagina=2")).toEqual(completo);
+    expect(escrever(completo)).toBe("busca=squi&tipo=water&pagina=2");
+    expect(lerEstadoListagem(escreverEstadoListagem(completo))).toEqual(completo);
+  });
+});

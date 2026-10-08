@@ -3,11 +3,13 @@ import { useLocation, useSearchParams } from "react-router";
 import { CampoBusca } from "../componentes/CampoBusca";
 import { CartaoPokemon } from "../componentes/CartaoPokemon";
 import { Anuncio, Carregando, Erro } from "../componentes/Estado";
+import { FiltroTipo } from "../componentes/FiltroTipo";
 import { Paginacao } from "../componentes/Paginacao";
 import { escreverEstadoListagem, lerEstadoListagem } from "../data/estadoUrl";
 import { filtrarEPaginar } from "../data/listagem";
 import type { EstadoListagem, MapaDeTipos, TipoId } from "../data/modelos";
 import { pokeApi } from "../data/pokeapi";
+import { TIPOS } from "../data/tipos";
 import { useDados } from "../hooks/useDados";
 
 const estiloBotaoSecundario =
@@ -17,8 +19,9 @@ const estiloBotaoSecundario =
 function anuncioDaListagem(estado: EstadoListagem, totalItens: number, pagina: number, totalPaginas: number): string {
   if (totalItens === 0) return "Nenhum Pokémon encontrado.";
   const paginacao = `Página ${pagina} de ${totalPaginas}.`;
-  if (estado.busca === "") return paginacao;
-  return `${totalItens} ${totalItens === 1 ? "Pokémon encontrado" : "Pokémon encontrados"}. ${paginacao}`;
+  if (estado.busca === "" && estado.tipo === null) return paginacao;
+  const filtro = estado.tipo ? ` do tipo ${TIPOS[estado.tipo].nome}` : "";
+  return `${totalItens} ${totalItens === 1 ? "Pokémon encontrado" : "Pokémon encontrados"}${filtro}. ${paginacao}`;
 }
 
 function tiposDoPokemon(id: number, mapa: MapaDeTipos | undefined, mapaFalhou: boolean): TipoId[] | undefined | null {
@@ -36,7 +39,10 @@ export function Listagem() {
   const mapa = useDados("mapa-de-tipos", pokeApi.carregarMapaDeTipos, pokeApi.espiarMapaDeTipos);
   const mapaFalhou = mapa.status === "erro";
 
-  const resultado = especies.dados ? filtrarEPaginar(especies.dados, mapa.dados ?? null, estado) : null;
+  // Com um tipo na URL e o mapa ainda indisponível, não exibe a lista sem filtro nem ajusta a página.
+  const aguardandoTipos = estado.tipo !== null && !mapa.dados;
+  const resultado =
+    especies.dados && !aguardandoTipos ? filtrarEPaginar(especies.dados, mapa.dados ?? null, estado) : null;
   const paginaAjustada = resultado !== null && resultado.pagina !== estado.pagina ? resultado.pagina : null;
 
   function navegar(novoEstado: EstadoListagem, substituir = false) {
@@ -61,6 +67,15 @@ export function Listagem() {
     navegar({ ...estado, busca: "", pagina: 1 });
   }
 
+  // Trocar o tipo cria uma entrada no histórico, para que "voltar" restaure o filtro anterior.
+  function filtrarPorTipo(tipo: TipoId | null) {
+    navegar({ ...estado, tipo, pagina: 1 });
+  }
+
+  function limparFiltro() {
+    navegar({ ...estado, tipo: null, pagina: 1 });
+  }
+
   function irParaPagina(pagina: number) {
     navegar({ ...estado, pagina });
     window.scrollTo({ top: 0 });
@@ -74,10 +89,15 @@ export function Listagem() {
 
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]">
         <CampoBusca valor={estado.busca} aoMudar={buscar} />
+        <FiltroTipo valor={estado.tipo} aoMudar={filtrarPorTipo} desabilitado={!mapa.dados} />
       </div>
 
       {especies.status === "carregando" && <Carregando texto="Carregando Pokémon…" />}
       {especies.status === "erro" && <Erro erro={especies.erro} aoTentarNovamente={especies.tentarNovamente} />}
+      {especies.dados && aguardandoTipos && mapa.status === "carregando" && <Carregando texto="Carregando tipos…" />}
+      {especies.dados && aguardandoTipos && mapaFalhou && (
+        <Erro erro={mapa.erro} mensagem="Não foi possível carregar os tipos." aoTentarNovamente={mapa.tentarNovamente} />
+      )}
 
       {resultado && (
         <>
@@ -97,6 +117,11 @@ export function Listagem() {
                 {estado.busca !== "" && (
                   <button type="button" onClick={limparBusca} className={estiloBotaoSecundario}>
                     Limpar busca
+                  </button>
+                )}
+                {estado.tipo !== null && (
+                  <button type="button" onClick={limparFiltro} className={estiloBotaoSecundario}>
+                    Limpar filtro
                   </button>
                 )}
               </div>

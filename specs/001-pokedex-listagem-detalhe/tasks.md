@@ -181,15 +181,15 @@ e ver a mensagem de nenhum resultado; limpar e ver a listagem completa.
 
 ### Testes da História 4 (escrever primeiro e confirmar que falham)
 
-- [ ] T056 [P] [US4] Adicionar a `tests/data/listagem.test.ts` os casos de tipo em `filtrarEPaginar`: tipo `fire` devolve só ids cujo `MapaDeTipos` contém `fire`, em ordem de `id`; tipo combinado com busca exige os dois (FR-007); `mapaDeTipos` nulo ignora o filtro de tipo; combinação sem resultado devolve `totalItens: 0`
-- [ ] T057 [P] [US4] Adicionar a `tests/data/estadoUrl.test.ts` os casos de `tipo`: `water` → `"water"`; valor desconhecido (por exemplo, `banana` ou `shadow`) → nulo ("Todos os tipos"); tipo nulo omitido da query string; os três campos combinados lidos e escritos corretamente
+- [X] T056 [P] [US4] Adicionar a `tests/data/listagem.test.ts` os casos de tipo em `filtrarEPaginar`: tipo `fire` devolve só ids cujo `MapaDeTipos` contém `fire`, em ordem de `id`; tipo combinado com busca exige os dois (FR-007); `mapaDeTipos` nulo ignora o filtro de tipo; combinação sem resultado devolve `totalItens: 0`
+- [X] T057 [P] [US4] Adicionar a `tests/data/estadoUrl.test.ts` os casos de `tipo`: `water` → `"water"`; valor desconhecido (por exemplo, `banana` ou `shadow`) → nulo ("Todos os tipos"); tipo nulo omitido da query string; os três campos combinados lidos e escritos corretamente
 
 ### Implementação da História 4
 
-- [ ] T058 [US4] Aplicar o filtro de tipo em `filtrarEPaginar` em `src/data/listagem.ts`, ignorando-o quando `mapaDeTipos` for nulo. Deve passar em T056
-- [ ] T059 [P] [US4] Adicionar o campo `tipo` (validado com `ehTipoId`) a `lerEstadoListagem` e `escreverEstadoListagem` em `src/data/estadoUrl.ts`. Deve passar em T057
-- [ ] T060 [P] [US4] Criar `src/componentes/FiltroTipo.tsx`: `<label>` visível "Tipo" associado a `<select>` com a opção "Todos os tipos" e as 18 opções de `LISTA_TIPOS` com o nome em pt-BR; prop `desabilitado` para enquanto o mapa de tipos carrega
-- [ ] T061 [US4] Integrar o filtro em `src/paginas/Listagem.tsx`: trocar o tipo cria nova entrada no histórico e volta para a página 1 (FR-008); o seletor fica desabilitado até o mapa de tipos carregar; com `tipo` ativo na URL e o mapa ainda carregando, exibir `Carregando` no lugar dos resultados (nunca a lista sem filtro) e não ajustar nem reescrever a página até o mapa chegar; com `tipo` ativo e o mapa em erro, exibir `Erro` com "Tentar novamente" no lugar dos resultados; no estado vazio, mostrar também "Limpar filtro" quando houver tipo ativo (FR-009); `Anuncio` inclui o tipo selecionado
+- [X] T058 [US4] Aplicar o filtro de tipo em `filtrarEPaginar` em `src/data/listagem.ts`, ignorando-o quando `mapaDeTipos` for nulo. Deve passar em T056
+- [X] T059 [P] [US4] Adicionar o campo `tipo` (validado com `ehTipoId`) a `lerEstadoListagem` e `escreverEstadoListagem` em `src/data/estadoUrl.ts`. Deve passar em T057
+- [X] T060 [P] [US4] Criar `src/componentes/FiltroTipo.tsx`: `<label>` visível "Tipo" associado a `<select>` com a opção "Todos os tipos" e as 18 opções de `LISTA_TIPOS` com o nome em pt-BR; prop `desabilitado` para enquanto o mapa de tipos carrega
+- [X] T061 [US4] Integrar o filtro em `src/paginas/Listagem.tsx`: trocar o tipo cria nova entrada no histórico e volta para a página 1 (FR-008); o seletor fica desabilitado até o mapa de tipos carregar; com `tipo` ativo na URL e o mapa ainda carregando, exibir `Carregando` no lugar dos resultados (nunca a lista sem filtro) e não ajustar nem reescrever a página até o mapa chegar; com `tipo` ativo e o mapa em erro, exibir `Erro` com "Tentar novamente" no lugar dos resultados; no estado vazio, mostrar também "Limpar filtro" quando houver tipo ativo (FR-009); `Anuncio` inclui o tipo selecionado
 
 **Checkpoint**: todas as histórias funcionam de forma independente.
 
