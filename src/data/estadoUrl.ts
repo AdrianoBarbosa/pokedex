@@ -3,11 +3,17 @@ import type { EstadoListagem } from "./modelos";
 
 export function lerEstadoListagem(query: URLSearchParams): EstadoListagem {
   const pagina = Number.parseInt(query.get("pagina") ?? "", 10);
-  return { pagina: Number.isNaN(pagina) ? 1 : pagina, busca: "", tipo: null };
+  return {
+    pagina: Number.isNaN(pagina) ? 1 : pagina,
+    busca: (query.get("busca") ?? "").trim(),
+    tipo: null,
+  };
 }
 
 export function escreverEstadoListagem(estado: EstadoListagem): URLSearchParams {
   const query = new URLSearchParams();
+  const busca = estado.busca.trim();
+  if (busca !== "") query.set("busca", busca);
   if (estado.pagina !== 1) query.set("pagina", String(estado.pagina));
   return query;
 }

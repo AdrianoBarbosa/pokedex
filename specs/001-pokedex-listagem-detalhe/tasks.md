@@ -158,15 +158,15 @@ e ver a mensagem de nenhum resultado; limpar e ver a listagem completa.
 
 ### Testes da História 3 (escrever primeiro e confirmar que falham)
 
-- [ ] T050 [P] [US3] Adicionar a `tests/data/listagem.test.ts` os casos de `normalizarTermo` ("  PIKA " → "pika"; "Mr. Mime" → "mrmime"; "Flabébé" → "flabebe") e de busca em `filtrarEPaginar`: "char" encontra só nomes que contêm "char"; "mr mime" encontra `mr-mime`; busca sem resultado devolve `totalItens: 0`; resultados continuam ordenados por `id` e paginados de 20 em 20
-- [ ] T051 [P] [US3] Adicionar a `tests/data/estadoUrl.test.ts` os casos de `busca`: espaços nas pontas removidos na leitura; busca vazia omitida da query string; `busca` e `pagina` combinadas lidas e escritas corretamente
+- [X] T050 [P] [US3] Adicionar a `tests/data/listagem.test.ts` os casos de `normalizarTermo` ("  PIKA " → "pika"; "Mr. Mime" → "mrmime"; "Flabébé" → "flabebe") e de busca em `filtrarEPaginar`: "char" encontra só nomes que contêm "char"; "mr mime" encontra `mr-mime`; busca sem resultado devolve `totalItens: 0`; resultados continuam ordenados por `id` e paginados de 20 em 20
+- [X] T051 [P] [US3] Adicionar a `tests/data/estadoUrl.test.ts` os casos de `busca`: espaços nas pontas removidos na leitura; busca vazia omitida da query string; `busca` e `pagina` combinadas lidas e escritas corretamente
 
 ### Implementação da História 3
 
-- [ ] T052 [US3] Adicionar a `src/data/listagem.ts` a função `normalizarTermo(texto)` (minúsculas, remoção de acentos via `normalize("NFD")`, remoção de caracteres não alfanuméricos, trim) e aplicar a busca em `filtrarEPaginar`: o Pokémon entra se `normalizarTermo(slug)` ou `normalizarTermo(nome)` contém `normalizarTermo(busca)`. Deve passar em T050
-- [ ] T053 [P] [US3] Adicionar o campo `busca` a `lerEstadoListagem` e `escreverEstadoListagem` em `src/data/estadoUrl.ts`. Deve passar em T051
-- [ ] T054 [P] [US3] Criar `src/componentes/CampoBusca.tsx`: `<label>` visível "Buscar por nome" associado a `<input type="search">`, valor controlado, botão "Limpar busca" quando houver texto
-- [ ] T055 [US3] Integrar a busca em `src/paginas/Listagem.tsx`: mudar o texto atualiza a URL com `setSearchParams(..., { replace: true })` e volta para a página 1 (FR-008); com `totalItens` 0 exibir "Nenhum Pokémon encontrado." e o botão "Limpar busca" (FR-009); `Anuncio` informa "N Pokémon encontrados" quando há busca ativa (FR-026)
+- [X] T052 [US3] Adicionar a `src/data/listagem.ts` a função `normalizarTermo(texto)` (minúsculas, remoção de acentos via `normalize("NFD")`, remoção de caracteres não alfanuméricos, trim) e aplicar a busca em `filtrarEPaginar`: o Pokémon entra se `normalizarTermo(slug)` ou `normalizarTermo(nome)` contém `normalizarTermo(busca)`. Deve passar em T050
+- [X] T053 [P] [US3] Adicionar o campo `busca` a `lerEstadoListagem` e `escreverEstadoListagem` em `src/data/estadoUrl.ts`. Deve passar em T051
+- [X] T054 [P] [US3] Criar `src/componentes/CampoBusca.tsx`: `<label>` visível "Buscar por nome" associado a `<input type="search">`, valor controlado, botão "Limpar busca" quando houver texto
+- [X] T055 [US3] Integrar a busca em `src/paginas/Listagem.tsx`: mudar o texto atualiza a URL com `setSearchParams(..., { replace: true })` e volta para a página 1 (FR-008); com `totalItens` 0 exibir "Nenhum Pokémon encontrado." e o botão "Limpar busca" (FR-009); `Anuncio` informa "N Pokémon encontrados" quando há busca ativa (FR-026)
 
 **Checkpoint**: Histórias 1, 2 e 3 funcionam; validar os passos 1 a 3 de "Histórias 3 e 4" em [quickstart.md](./quickstart.md).
 

@@ -26,3 +26,23 @@ describe("estado da listagem na URL: pagina", () => {
     expect(lerEstadoListagem(escreverEstadoListagem(original))).toEqual(original);
   });
 });
+
+describe("estado da listagem na URL: busca", () => {
+  it("remove espaços nas pontas na leitura", () => {
+    expect(ler("busca=%20%20pika%20").busca).toBe("pika");
+  });
+
+  it("omite a busca vazia ou só com espaços", () => {
+    expect(escrever({ pagina: 1, busca: "", tipo: null })).toBe("");
+    expect(escrever({ pagina: 1, busca: "   ", tipo: null })).toBe("");
+  });
+
+  it("escreve a busca sem os espaços nas pontas", () => {
+    expect(escrever({ pagina: 1, busca: " mr mime ", tipo: null })).toBe("busca=mr+mime");
+  });
+
+  it("lê e escreve busca e página combinadas", () => {
+    expect(ler("busca=char&pagina=2")).toEqual({ pagina: 2, busca: "char", tipo: null });
+    expect(escrever({ pagina: 2, busca: "char", tipo: null })).toBe("busca=char&pagina=2");
+  });
+});
