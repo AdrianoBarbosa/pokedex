@@ -92,20 +92,20 @@ Roteiro: DevTools → Network → "Disable cache" marcado, throttling "Fast 4G",
 "Clear site data". Abra `/` e anote quando os cartões aparecem; depois clique em um Pokémon e
 anote quando o nome e os stats aparecem. Esperado: até 2 s em cada caso.
 
-Registro de 2026-10-08 (T068). O throttling não pôde ser aplicado pela automação do navegador
-usada na validação, então os valores abaixo são os tamanhos reais transferidos, medidos com
-`curl --compressed` e `gzip`, e uma estimativa a partir deles. A medição com throttling continua
-pendente.
+Registro de 2026-10-08 (T068), com o serviço `web` (Nginx) e o Lighthouse 13.5 em Chrome headless,
+perfil e cache vazios. O Lighthouse aplica throttling simulado; o preset desktop é o mais próximo
+de "Fast 4G" e da banda larga típica do SC-002, e o preset móvel é bem mais severo.
 
-| Etapa | O que precisa chegar | Tamanho comprimido | Tempo real medido (banda larga) |
-|---|---|---|---|
-| Listagem utilizável | `index.html` + JS + CSS | 0,3 KB + 86,3 KB + 4,5 KB | servidor local |
-| | `pokemon-species?limit=100000` | 8,6 KB | 50 ms |
-| Tipos nos cartões (não bloqueia a listagem) | 18 × `type/*` em paralelo | 3 a 5 KB cada | cerca de 40 ms cada |
-| Detalhe após o clique | `pokemon/{id}` + `pokemon-species/{id}` em paralelo | 7,1 KB + 5,3 KB | cerca de 45 ms |
-| | `evolution-chain/{id}` | 0,5 KB | cerca de 40 ms |
+| Página | Perfil | FCP | LCP | Interativa |
+|---|---|---|---|---|
+| Listagem `/` | desktop: 10 Mbps, 40 ms, CPU 1x | 0,5 s | 1,4 s | 1,4 s |
+| Detalhe `/pokemon/25` | desktop: 10 Mbps, 40 ms, CPU 1x | 0,5 s | 1,0 s | 1,0 s |
+| Listagem `/` | móvel: 1,6 Mbps, 150 ms, CPU 4x | 2,4 s | 5,3 s | 5,4 s |
+| Detalhe `/pokemon/25` | móvel: 1,6 Mbps, 150 ms, CPU 4x | 2,4 s | 4,0 s | 4,0 s |
 
-Estimativa conservadora com 1,6 Mbps e 150 ms de latência (pior que "Fast 4G"), incluindo
-abertura de conexão com o servidor e com `pokeapi.co`: cerca de 1,9 s até a listagem ficar
-utilizável e cerca de 0,4 s até o detalhe aparecer (conexão já aberta). As duas ficam dentro da
-meta de 2 s. As imagens carregam depois, sob demanda, e não entram nesse tempo.
+Resultado: a meta de 2 s do SC-002 é cumprida no perfil desktop. No perfil móvel lento ela não é
+cumprida. O maior peso é das imagens: cada página da listagem baixa 20 artes oficiais (cerca de
+3 MB no total) para exibi-las em 96 px; o detalhe baixa cerca de 330 KB de imagens. O código da
+aplicação e os dados da PokeAPI no caminho crítico somam cerca de 100 KB comprimidos.
+
+Acessibilidade no mesmo Lighthouse: 100 na listagem e 100 no detalhe, sem nenhuma falha.
