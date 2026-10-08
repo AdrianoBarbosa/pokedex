@@ -42,6 +42,9 @@ export function Detalhe() {
   }, [parametroId]);
   useEffect(() => {
     document.title = nome ? `${nome} | Pokédex` : "Pokédex";
+    return () => {
+      document.title = "Pokédex";
+    };
   }, [nome]);
 
   if (pokemon.status === "erro" && pokemon.erro instanceof ErroDeDados && pokemon.erro.tipo === "nao-encontrado") {
