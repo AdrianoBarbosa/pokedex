@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+.git
+.specify
+.claude
+specs
+Dockerfile*
+.dockerignore
+docker-compose.yml
+*.log*
+.env*
