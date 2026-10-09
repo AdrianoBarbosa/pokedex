@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, useLocation } from "react-router";
+import { MemoryRouter, useLocation, useNavigate } from "react-router";
 import App from "../../src/App";
 import { ErroDeDados, type PokemonDetalhe } from "../../src/data/modelos";
 import { normalizarListaEspecies, resumoDePokemon } from "../../src/data/normalizar";
@@ -40,7 +40,15 @@ vi.mock("../../src/data/pokeapi", () => ({
 
 function Endereco() {
   const { pathname, search } = useLocation();
-  return <output data-testid="endereco">{pathname + search}</output>;
+  const navegar = useNavigate();
+  return (
+    <>
+      <output data-testid="endereco">{pathname + search}</output>
+      <button type="button" onClick={() => void navegar(-1)}>
+        Voltar do navegador
+      </button>
+    </>
+  );
 }
 
 function abrir(endereco: string) {
@@ -92,5 +100,37 @@ describe("Comparativo", () => {
     expect(await screen.findByText(/Não foi possível montar o comparativo deste link/)).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Escolher o primeiro Pokémon" })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Escolher o segundo Pokémon" })).toBeInTheDocument();
+  });
+
+  it("troca um lado sem perder o outro e o voltar restaura o par anterior", async () => {
+    abrir("/comparar?a=6&b=9");
+    const ladoB = (await screen.findByRole("heading", { level: 2, name: "Blastoise" })).closest("section");
+    if (!ladoB) throw new Error("bloco do lado b ausente");
+
+    await userEvent.click(within(ladoB).getByRole("button", { name: "Trocar" }));
+    const campo = screen.getByRole("combobox", { name: "Escolher o segundo Pokémon" });
+    expect(campo).toHaveFocus();
+    await userEvent.type(campo, "venu");
+    await userEvent.keyboard("{ArrowDown}{Enter}");
+
+    expect(endereco()).toBe("/comparar?a=6&b=3");
+    expect(await screen.findByRole("heading", { level: 2, name: "Venusaur" })).toHaveFocus();
+    expect(screen.getByRole("heading", { level: 2, name: "Charizard" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Voltar do navegador" }));
+    expect(endereco()).toBe("/comparar?a=6&b=9");
+    expect(await screen.findByRole("heading", { level: 2, name: "Blastoise" })).toBeInTheDocument();
+  });
+
+  it("desistir da troca mantém o comparativo e devolve o foco ao Trocar", async () => {
+    abrir("/comparar?a=6&b=9");
+    const ladoA = (await screen.findByRole("heading", { level: 2, name: "Charizard" })).closest("section");
+    if (!ladoA) throw new Error("bloco do lado a ausente");
+
+    await userEvent.click(within(ladoA).getByRole("button", { name: "Trocar" }));
+    await userEvent.keyboard("{Escape}");
+
+    expect(endereco()).toBe("/comparar?a=6&b=9");
+    expect(within(ladoA).getByRole("button", { name: "Trocar" })).toHaveFocus();
   });
 });

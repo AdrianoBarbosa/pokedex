@@ -77,7 +77,14 @@ interface BlocoLadoProps {
 function BlocoLado({ lado, estado, especies, aoEscolher, focarTitulo, aoFocarTitulo }: BlocoLadoProps) {
   const pokemon = estado.tipo === "carregado" ? estado.pokemon : null;
   const titulo = useRef<HTMLHeadingElement>(null);
+  const botaoTrocar = useRef<HTMLButtonElement>(null);
+  // Seletor aberto sobre um lado já preenchido ("Trocar") ou não encontrado ("Escolher outro").
   const [escolhendo, setEscolhendo] = useState(false);
+  const [desistiu, setDesistiu] = useState(false);
+
+  useEffect(() => {
+    if (desistiu && !escolhendo) botaoTrocar.current?.focus();
+  }, [desistiu, escolhendo]);
 
   useEffect(() => {
     if (focarTitulo && estado.tipo !== "carregando") {
@@ -91,7 +98,18 @@ function BlocoLado({ lado, estado, especies, aoEscolher, focarTitulo, aoFocarTit
     aoEscolher(id);
   }
 
-  function seletor(focarAoMontar: boolean) {
+  // Desistir da troca não muda a URL e devolve o foco ao botão "Trocar" (FR-016, FR-026).
+  function desistir() {
+    setDesistiu(true);
+    setEscolhendo(false);
+  }
+
+  function trocar() {
+    setDesistiu(false);
+    setEscolhendo(true);
+  }
+
+  function seletor(focarAoMontar: boolean, aoDesistir?: () => void) {
     if (especies.dados) {
       return (
         <SeletorPokemon
@@ -99,6 +117,7 @@ function BlocoLado({ lado, estado, especies, aoEscolher, focarTitulo, aoFocarTit
           especies={especies.dados}
           aoEscolher={escolher}
           focarAoMontar={focarAoMontar}
+          aoDesistir={aoDesistir}
         />
       );
     }
@@ -145,6 +164,18 @@ function BlocoLado({ lado, estado, especies, aoEscolher, focarTitulo, aoFocarTit
               </li>
             ))}
           </ul>
+          {escolhendo ? (
+            seletor(true, desistir)
+          ) : (
+            <button
+              ref={botaoTrocar}
+              type="button"
+              onClick={trocar}
+              className={estiloBotaoSecundario}
+            >
+              Trocar
+            </button>
+          )}
         </>
       ) : (
         <h2

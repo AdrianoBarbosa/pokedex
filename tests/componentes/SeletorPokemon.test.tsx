@@ -76,4 +76,32 @@ describe("SeletorPokemon", () => {
     expect(campo).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryAllByRole("option")).toHaveLength(0);
   });
+
+  it("com aoDesistir, oferece Cancelar", async () => {
+    const aoDesistir = vi.fn();
+    renderizar({ aoDesistir });
+    await userEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    expect(aoDesistir).toHaveBeenCalledOnce();
+  });
+
+  it("com aoDesistir, Esc desiste mesmo com a lista aberta", async () => {
+    const aoDesistir = vi.fn();
+    const { campo } = renderizar({ aoDesistir });
+    await userEvent.type(campo, "char");
+    await userEvent.keyboard("{Escape}");
+    expect(aoDesistir).toHaveBeenCalledOnce();
+  });
+
+  it("sem aoDesistir, não há Cancelar e Esc só fecha a lista", async () => {
+    const { campo } = renderizar();
+    expect(screen.queryByRole("button", { name: "Cancelar" })).not.toBeInTheDocument();
+    await userEvent.type(campo, "char");
+    await userEvent.keyboard("{Escape}");
+    expect(campo).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("com focarAoMontar, o campo recebe o foco", () => {
+    const { campo } = renderizar({ focarAoMontar: true });
+    expect(campo).toHaveFocus();
+  });
 });

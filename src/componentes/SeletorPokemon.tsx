@@ -10,6 +10,8 @@ interface SeletorPokemonProps {
   especies: readonly PokemonResumo[];
   aoEscolher: (id: number) => void;
   focarAoMontar?: boolean;
+  /** Só durante uma troca: mostra "Cancelar", e Esc desiste da troca (FR-016). */
+  aoDesistir?: () => void;
 }
 
 function anuncioDasSugestoes(quantidade: number): string {
@@ -21,7 +23,13 @@ function anuncioDasSugestoes(quantidade: number): string {
  * Combobox com lista de sugestões no padrão da WAI-ARIA APG (ver research.md, item 6). O foco fica
  * sempre no campo; a sugestão ativa é indicada por `aria-activedescendant`.
  */
-export function SeletorPokemon({ rotulo, especies, aoEscolher, focarAoMontar = false }: SeletorPokemonProps) {
+export function SeletorPokemon({
+  rotulo,
+  especies,
+  aoEscolher,
+  focarAoMontar = false,
+  aoDesistir,
+}: SeletorPokemonProps) {
   const id = useId();
   const campo = useRef<HTMLInputElement>(null);
   const [texto, setTexto] = useState("");
@@ -71,6 +79,7 @@ export function SeletorPokemon({ rotulo, especies, aoEscolher, focarAoMontar = f
       case "Escape":
         setAberta(false);
         setAtiva(-1);
+        aoDesistir?.();
         break;
     }
   }
@@ -80,28 +89,39 @@ export function SeletorPokemon({ rotulo, especies, aoEscolher, focarAoMontar = f
       <label htmlFor={`${id}-campo`} className="text-sm font-medium text-gray-800">
         {rotulo}
       </label>
-      <input
-        ref={campo}
-        id={`${id}-campo`}
-        type="text"
-        role="combobox"
-        aria-autocomplete="list"
-        aria-expanded={expandida}
-        aria-controls={idLista}
-        aria-activedescendant={opcaoAtiva ? idOpcao(opcaoAtiva) : undefined}
-        value={texto}
-        onChange={(evento) => {
-          setTexto(evento.target.value);
-          setAberta(true);
-          setAtiva(-1);
-        }}
-        onKeyDown={aoTeclar}
-        onBlur={() => setAberta(false)}
-        autoComplete="off"
-        spellCheck={false}
-        placeholder="Ex.: Pikachu"
-        className="w-full min-w-0 rounded-md border border-gray-400 bg-white px-3 py-2 text-gray-900 placeholder:text-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
-      />
+      <div className="flex gap-2">
+        <input
+          ref={campo}
+          id={`${id}-campo`}
+          type="text"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={expandida}
+          aria-controls={idLista}
+          aria-activedescendant={opcaoAtiva ? idOpcao(opcaoAtiva) : undefined}
+          value={texto}
+          onChange={(evento) => {
+            setTexto(evento.target.value);
+            setAberta(true);
+            setAtiva(-1);
+          }}
+          onKeyDown={aoTeclar}
+          onBlur={() => setAberta(false)}
+          autoComplete="off"
+          spellCheck={false}
+          placeholder="Ex.: Pikachu"
+          className="w-full min-w-0 rounded-md border border-gray-400 bg-white px-3 py-2 text-gray-900 placeholder:text-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+        />
+        {aoDesistir && (
+          <button
+            type="button"
+            onClick={aoDesistir}
+            className="shrink-0 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+          >
+            Cancelar
+          </button>
+        )}
+      </div>
       <ul
         id={idLista}
         role="listbox"

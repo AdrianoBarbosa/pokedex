@@ -134,12 +134,12 @@ substitui só aquele lado, e desistir mantém tudo como estava.
 
 ### Testes da História 3 (escrever primeiro e confirmar que falham)
 
-- [ ] T017 [US3] Acrescentar em `tests/componentes/SeletorPokemon.test.tsx`: com `aoDesistir`, aparece o botão "Cancelar" e acioná-lo chama `aoDesistir`; Esc chama `aoDesistir` mesmo com a lista aberta; sem `aoDesistir`, não há botão "Cancelar" e Esc só fecha a lista; com `focarAoMontar`, o campo recebe o foco ao montar (depende de T012)
+- [X] T017 [US3] Acrescentar em `tests/componentes/SeletorPokemon.test.tsx`: com `aoDesistir`, aparece o botão "Cancelar" e acioná-lo chama `aoDesistir`; Esc chama `aoDesistir` mesmo com a lista aberta; sem `aoDesistir`, não há botão "Cancelar" e Esc só fecha a lista; com `focarAoMontar`, o campo recebe o foco ao montar (depende de T012)
 
 ### Implementação da História 3
 
-- [ ] T018 [US3] Em `src/componentes/SeletorPokemon.tsx`, adicionar a prop opcional `aoDesistir?: () => void`: quando presente, renderiza o botão "Cancelar" ao lado do campo e Esc chama `aoDesistir` (FR-016). Deve passar em T017 (depende de T014)
-- [ ] T019 [US3] Em `src/paginas/Comparativo.tsx`, adicionar o botão "Trocar" em cada lado carregado e o estado local `ladoEmTroca: { lado: Lado; id: number } | null`, que é descartado se o `id` daquele lado na URL mudar (por exemplo, pelo "voltar" do navegador). Durante a troca, o lado continua exibindo o Pokémon atual e a tabela continua igual; o botão "Trocar" dá lugar ao `SeletorPokemon` com `rotulo` "Escolher o primeiro Pokémon" ou "Escolher o segundo Pokémon", `focarAoMontar` e `aoDesistir`. Escolher navega com `escreverComparativo` substituindo só aquele lado, sem `replace` (FR-015, FR-017), e move o foco para o `<h2>` do lado. Desistir fecha o seletor sem mudar a URL e devolve o foco ao botão "Trocar" daquele lado (FR-016, FR-026) (depende de T015, T018)
+- [X] T018 [US3] Em `src/componentes/SeletorPokemon.tsx`, adicionar a prop opcional `aoDesistir?: () => void`: quando presente, renderiza o botão "Cancelar" ao lado do campo e Esc chama `aoDesistir` (FR-016). Deve passar em T017 (depende de T014)
+- [X] T019 [US3] Em `src/paginas/Comparativo.tsx`, adicionar o botão "Trocar" em cada lado carregado e o estado local `ladoEmTroca: { lado: Lado; id: number } | null`, que é descartado se o `id` daquele lado na URL mudar (por exemplo, pelo "voltar" do navegador). Durante a troca, o lado continua exibindo o Pokémon atual e a tabela continua igual; o botão "Trocar" dá lugar ao `SeletorPokemon` com `rotulo` "Escolher o primeiro Pokémon" ou "Escolher o segundo Pokémon", `focarAoMontar` e `aoDesistir`. Escolher navega com `escreverComparativo` substituindo só aquele lado, sem `replace` (FR-015, FR-017), e move o foco para o `<h2>` do lado. Desistir fecha o seletor sem mudar a URL e devolve o foco ao botão "Trocar" daquele lado (FR-016, FR-026) (depende de T015, T018)
 
 **Checkpoint**: Histórias 1, 2 e 3 funcionam; validar com o roteiro "História 3" de [quickstart.md](./quickstart.md).
 
