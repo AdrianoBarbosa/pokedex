@@ -1,8 +1,32 @@
 # Pokédex
 
+> **Projeto de estudos.** Este repositório existe para praticar **Spec-Driven Development** (SDD)
+> com o [GitHub Spec Kit](https://github.com/github/spec-kit). A Pokédex é só o pretexto: o foco
+> está no processo de sair de uma especificação escrita e chegar ao código por etapas rastreáveis.
+
 Pokédex web que consome a [PokeAPI](https://pokeapi.co/): listagem paginada, busca por nome, filtro
 por tipo, detalhe de cada Pokémon com imagem, tipos, stats base e cadeia de evolução, e comparativo
 entre dois Pokémon lado a lado, com o vencedor de cada stat e do total destacado.
+
+## Como o projeto foi construído
+
+Todo o código nasceu do fluxo do Spec Kit, executado com o [Claude Code](https://claude.com/claude-code)
+como agente. Cada feature seguiu as etapas abaixo (o esclarecimento só foi necessário na 002), e
+os artefatos de cada uma ficam versionados em [specs/](specs/):
+
+| Etapa | Comando | Resultado |
+|---|---|---|
+| Princípios do projeto | `/speckit-constitution` | [constitution.md](.specify/memory/constitution.md) |
+| Especificação | `/speckit-specify` | `spec.md`: o quê e por quê, sem decisões técnicas |
+| Esclarecimento | `/speckit-clarify` | perguntas sobre pontos ambíguos, respostas registradas na spec |
+| Plano técnico | `/speckit-plan` | `plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md` |
+| Tarefas | `/speckit-tasks` | `tasks.md`: tarefas pequenas, ordenadas por dependência |
+| Análise | `/speckit-analyze` | checagem de consistência entre spec, plano e tarefas |
+| Implementação | `/speckit-implement` | o código, tarefa por tarefa |
+| Convergência | `/speckit-converge` | compara o código com a spec e registra o que faltou como novas tarefas |
+
+Cada feature foi desenvolvida em um branch próprio (`001-...`, `002-...`), criado pela extensão de
+Git do Spec Kit.
 
 ## Endereços
 
