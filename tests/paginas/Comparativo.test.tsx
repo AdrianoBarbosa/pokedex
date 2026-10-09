@@ -35,6 +35,9 @@ vi.mock("../../src/data/pokeapi", () => ({
       return pokemon ? Promise.resolve(pokemon) : Promise.reject(new ErroDeDados("nao-encontrado"));
     },
     espiarPokemon: () => undefined,
+    // Usados pela listagem, que o teste da navegação principal abre.
+    carregarMapaDeTipos: () => Promise.resolve({}),
+    espiarMapaDeTipos: () => undefined,
   },
 }));
 
@@ -132,5 +135,17 @@ describe("Comparativo", () => {
 
     expect(endereco()).toBe("/comparar?a=6&b=9");
     expect(within(ladoA).getByRole("button", { name: "Trocar" })).toHaveFocus();
+  });
+
+  it("a navegação principal abre o comparativo vazio e marca a página atual", async () => {
+    abrir("/");
+    const link = screen.getByRole("link", { name: "Comparar" });
+    expect(link).not.toHaveAttribute("aria-current");
+
+    await userEvent.click(link);
+    expect(endereco()).toBe("/comparar");
+    expect(screen.getByRole("link", { name: "Comparar" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("combobox", { name: "Escolher o primeiro Pokémon" })).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Escolher o segundo Pokémon" })).toBeInTheDocument();
   });
 });

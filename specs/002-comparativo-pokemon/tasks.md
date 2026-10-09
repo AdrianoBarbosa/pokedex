@@ -154,7 +154,7 @@ Alakazam e ver `/comparar?a=94&b=65` (roteiro "História 4" de [quickstart.md](.
 
 ### Implementação da História 4
 
-- [ ] T020 [US4] Em `src/App.tsx`, adicionar ao cabeçalho, ao lado do link "Pokédex", `<nav aria-label="Principal">` com `NavLink` "Comparar" para `/comparar` (FR-012); o `NavLink` aplica `aria-current="page"` quando a rota está ativa, e o estado ativo também deve ser visível sem depender de cor (por exemplo, sublinhado). Texto branco sobre `bg-red-700`, como o link "Pokédex", com `focus-visible:outline-white`. O cabeçalho continua cabendo em 320 px
+- [X] T020 [US4] Em `src/App.tsx`, adicionar ao cabeçalho, ao lado do link "Pokédex", `<nav aria-label="Principal">` com `NavLink` "Comparar" para `/comparar` (FR-012); o `NavLink` aplica `aria-current="page"` quando a rota está ativa, e o estado ativo também deve ser visível sem depender de cor (por exemplo, sublinhado). Texto branco sobre `bg-red-700`, como o link "Pokédex", com `focus-visible:outline-white`. O cabeçalho continua cabendo em 320 px
 
 **Checkpoint**: as quatro histórias funcionam de forma independente.
 
