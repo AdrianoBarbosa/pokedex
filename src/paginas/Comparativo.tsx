@@ -6,7 +6,14 @@ import { SeletorPokemon } from "../componentes/SeletorPokemon";
 import { SeloTipo } from "../componentes/SeloTipo";
 import { TabelaComparativo } from "../componentes/TabelaComparativo";
 import { compararStats, escreverComparativo, lerComparativo } from "../data/comparativo";
-import { ErroDeDados, type Lado, type PokemonDetalhe, type PokemonResumo, type SelecaoLado } from "../data/modelos";
+import {
+  ErroDeDados,
+  type EstadoComparativo,
+  type Lado,
+  type PokemonDetalhe,
+  type PokemonResumo,
+  type SelecaoLado,
+} from "../data/modelos";
 import { formatarNumero } from "../data/nomes";
 import { pokeApi } from "../data/pokeapi";
 import { useDados, type ResultadoDados } from "../hooks/useDados";
@@ -231,9 +238,11 @@ export function Comparativo() {
   const pokemonB = estadoB.tipo === "carregado" ? estadoB.pokemon : null;
   const resultado = pokemonA && pokemonB ? compararStats(pokemonA.stats, pokemonB.stats) : null;
 
-  // Cada escolha cria uma entrada no histórico e preserva o outro lado (FR-015, FR-017).
+  // Cada escolha cria uma entrada no histórico e preserva o outro lado (FR-015, FR-017). No link não
+  // montado, o outro lado aparece vazio e continua vazio, mesmo que o link trouxesse um número inexistente.
   function escolher(lado: Lado, id: number) {
-    setParametros(escreverComparativo({ ...selecao, [lado]: id }));
+    const base: EstadoComparativo = linkNaoMontado ? { a: null, b: null } : selecao;
+    setParametros(escreverComparativo({ ...base, [lado]: id }));
     setFocoPendente({ lado, id });
   }
 

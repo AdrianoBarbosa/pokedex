@@ -148,4 +148,17 @@ describe("Comparativo", () => {
     expect(screen.getByRole("combobox", { name: "Escolher o primeiro Pokémon" })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Escolher o segundo Pokémon" })).toBeInTheDocument();
   });
+
+  it("no link não montado, escolher um lado não traz de volta o outro lado inexistente", async () => {
+    abrir("/comparar?a=abc&b=99999");
+    await screen.findByText(/Não foi possível montar o comparativo deste link/);
+
+    await userEvent.type(screen.getByRole("combobox", { name: "Escolher o primeiro Pokémon" }), "chariz");
+    await userEvent.keyboard("{ArrowDown}{Enter}");
+
+    expect(endereco()).toBe("/comparar?a=6");
+    await screen.findByRole("heading", { level: 2, name: "Charizard" });
+    expect(screen.getByRole("combobox", { name: "Escolher o segundo Pokémon" })).toBeInTheDocument();
+    expect(screen.queryByText("Pokémon não encontrado")).not.toBeInTheDocument();
+  });
 });
