@@ -1,4 +1,5 @@
 import { Link, Route, Routes } from "react-router";
+import { Comparativo } from "./paginas/Comparativo";
 import { Detalhe } from "./paginas/Detalhe";
 import { Listagem } from "./paginas/Listagem";
 import { NaoEncontrada } from "./paginas/NaoEncontrada";
@@ -26,6 +27,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Listagem />} />
           <Route path="/pokemon/:id" element={<Detalhe />} />
+          <Route path="/comparar" element={<Comparativo />} />
           <Route path="*" element={<NaoEncontrada />} />
         </Routes>
       </main>
