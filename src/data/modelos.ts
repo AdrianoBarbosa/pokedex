@@ -72,6 +72,38 @@ export interface ResultadoListagem {
   totalItens: number;
 }
 
+// Comparativo (ver specs/002-comparativo-pokemon/data-model.md).
+
+/** `a`: primeiro lado (esquerda); `b`: segundo lado (direita). */
+export type Lado = "a" | "b";
+
+export type Vencedor = "a" | "b" | "empate";
+
+/**
+ * `null`: lado vazio. Número: número da Pokédex Nacional escolhido para o lado.
+ * `"invalido"`: valor que não pode ser um número de Pokédex.
+ */
+export type SelecaoLado = number | null | "invalido";
+
+export interface EstadoComparativo {
+  a: SelecaoLado;
+  b: SelecaoLado;
+}
+
+export interface ComparacaoStat {
+  id: StatId;
+  valorA: number;
+  valorB: number;
+  vencedor: Vencedor;
+}
+
+export interface ResultadoComparativo {
+  /** Exatamente 6, na ordem de `StatId`. */
+  stats: ComparacaoStat[];
+  /** Soma dos 6 valores de cada lado, de 6 a 1530. */
+  total: { valorA: number; valorB: number; vencedor: Vencedor };
+}
+
 export type TipoErroDeDados = "nao-encontrado" | "rede" | "resposta-invalida";
 
 export class ErroDeDados extends Error {

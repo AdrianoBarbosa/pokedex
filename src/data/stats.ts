@@ -18,7 +18,20 @@ export const NOMES_STATS: Record<StatId, string> = {
   speed: "Velocidade",
 };
 
+/** Abreviações exibidas só em telas estreitas; o nome completo continua disponível a leitores de tela. */
+export const ABREVIACOES_STATS: Record<StatId, string> = {
+  hp: "PS",
+  attack: "Atq",
+  defense: "Def",
+  "special-attack": "AtE",
+  "special-defense": "DfE",
+  speed: "Vel",
+};
+
 export const VALOR_MAXIMO_STAT = 255;
+
+/** Barra cheia do total no comparativo (FR-005). */
+export const VALOR_MAXIMO_TOTAL = 6 * VALOR_MAXIMO_STAT;
 
 export function ehStatId(valor: unknown): valor is StatId {
   return typeof valor === "string" && Object.hasOwn(NOMES_STATS, valor);
