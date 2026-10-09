@@ -143,12 +143,12 @@ do texto da tarefa, mantidos por apoiarem a spec e a constituição sem acrescen
 | "Nenhum Pokémon encontrado" como parágrafo abaixo do campo, fora do `listbox` | `src/componentes/SeletorPokemon.tsx` | No padrão da APG, o `listbox` só contém opções; o contrato falava em "item não selecionável". A mensagem continua visível e anunciada |
 | `eslint-disable` de `jsx-a11y/click-events-have-key-events` nas opções do seletor | `src/componentes/SeletorPokemon.tsx` | No combobox da APG o teclado é tratado no campo (setas e Enter com `aria-activedescendant`); as opções só recebem clique |
 
-### Divergência conhecida com a spec
+### Divergência resolvida com a spec
 
-- **FR-027 × sprite das sugestões**: o FR-027 pede texto alternativo com o nome em toda imagem do
+- **FR-027 × sprite das sugestões**: o FR-027 pedia texto alternativo com o nome em toda imagem do
   seletor, mas o contrato e a T014 usam `alt=""` no sprite, que é decorativo ao lado do nome
-  escrito (Princípio IV: imagens decorativas DEVEM ter `alt=""`). A implementação segue o
-  contrato. Recomenda-se ajustar o texto do FR-027 (item I1 da análise).
+  escrito (Princípio IV: imagens decorativas DEVEM ter `alt=""`). Por decisão do usuário em
+  2026-10-09 (T028), o FR-027 passou a excetuar esses casos; o código não mudou.
 
 ### Constitution Check final
 

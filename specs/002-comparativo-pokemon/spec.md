@@ -16,6 +16,10 @@
 - Q: Qual valor deve corresponder à barra cheia nos stats do comparativo? → A: Escala fixa igual à do detalhe: 255 é a barra cheia em cada stat, e o total usa 6 × 255 (1530).
 - Q: O que o seletor mostra antes de a pessoa digitar e quantas sugestões ele exibe no máximo? → A: Nenhuma sugestão até digitar ao menos 1 caractere; depois, até 8 sugestões em ordem de número.
 
+### Session 2026-10-09
+
+- Q: A imagem de cada sugestão do seletor deve ter o nome do Pokémon como texto alternativo, se o nome já está escrito ao lado? → A: Não. Imagens decorativas ao lado do nome escrito têm texto alternativo vazio (FR-027), conforme o Princípio IV da constituição.
+
 ## Cenários de Usuário e Testes *(obrigatório)*
 
 ### História de Usuário 1 - Ver dois Pokémon lado a lado (Prioridade: P1)
@@ -236,7 +240,9 @@ escolher Gengar e Alakazam e conferir o comparativo completo.
 - **FR-026**: Ao concluir uma escolha ou troca, o foco DEVE ir para um ponto previsível do lado
   atualizado, e a atualização do comparativo DEVE ser anunciada a leitores de tela.
 - **FR-027**: Toda imagem de Pokémon no comparativo e no seletor DEVE ter texto alternativo com o
-  nome do Pokémon, e tipos DEVEM ser exibidos com o nome do tipo por escrito.
+  nome do Pokémon, exceto imagens decorativas exibidas ao lado do nome escrito (como a imagem de
+  cada sugestão do seletor), que DEVEM ter texto alternativo vazio para que o nome não seja lido
+  duas vezes. Tipos DEVEM ser exibidos com o nome do tipo por escrito.
 - **FR-028**: Os textos da interface, nomes de tipos e nomes de stats DEVEM estar em português do
   Brasil, seguindo os mesmos termos usados no detalhe.
 
