@@ -84,6 +84,12 @@ export function Detalhe() {
                   </li>
                 ))}
               </ul>
+              <Link
+                to={`/comparar?a=${pokemon.dados.id}`}
+                className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+              >
+                Comparar
+              </Link>
             </div>
           </header>
 

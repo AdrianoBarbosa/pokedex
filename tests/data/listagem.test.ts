@@ -1,4 +1,10 @@
-import { filtrarEPaginar, normalizarTermo } from "../../src/data/listagem";
+import {
+  correspondeABusca,
+  filtrarEPaginar,
+  LIMITE_SUGESTOES,
+  normalizarTermo,
+  sugerirPokemon,
+} from "../../src/data/listagem";
 import type { EstadoListagem, MapaDeTipos } from "../../src/data/modelos";
 import { montarMapaDeTipos, normalizarListaEspecies, resumoDePokemon } from "../../src/data/normalizar";
 import { listaEspecies, respostasPorTipo } from "../fixtures";
@@ -134,5 +140,57 @@ describe("filtrarEPaginar: filtro por tipo", () => {
 
   it("ajusta a página dentro dos resultados filtrados", () => {
     expect(filtrarEPaginar(especies, mapa, estado({ tipo: "fire", pagina: 3 })).pagina).toBe(1);
+  });
+});
+
+describe("correspondeABusca", () => {
+  const bulbasaur = resumoDePokemon(1, "bulbasaur");
+  const mrMime = resumoDePokemon(122, "mr-mime");
+
+  it("termo vazio corresponde a qualquer Pokémon", () => {
+    expect(correspondeABusca(bulbasaur, "")).toBe(true);
+  });
+
+  it("compara slug e nome normalizados", () => {
+    expect(correspondeABusca(bulbasaur, "bulba")).toBe(true);
+    expect(correspondeABusca(mrMime, normalizarTermo("Mr. Mime"))).toBe(true);
+    expect(correspondeABusca(bulbasaur, "char")).toBe(false);
+  });
+});
+
+describe("sugerirPokemon", () => {
+  const ids = (texto: string, lista = especies) => sugerirPokemon(lista, texto).map((p) => p.id);
+
+  it("não sugere nada com texto vazio ou só espaços", () => {
+    expect(sugerirPokemon(especies, "")).toEqual([]);
+    expect(sugerirPokemon(especies, "   ")).toEqual([]);
+  });
+
+  it("limita a 8 sugestões em ordem de número", () => {
+    expect(LIMITE_SUGESTOES).toBe(8);
+    // Squirtle (#7) não contém "a".
+    expect(ids("a")).toEqual([1, 2, 3, 4, 5, 6, 8, 9]);
+  });
+
+  it("ignora maiúsculas e espaços nas pontas", () => {
+    expect(ids("CHAR")).toEqual([4, 5, 6]);
+    expect(ids("  char  ")).toEqual([4, 5, 6]);
+  });
+
+  it("usa a mesma normalização da busca da listagem", () => {
+    expect(ids("nidoran")).toEqual([29, 32]);
+    expect(ids("mr mime", [...especies, resumoDePokemon(122, "mr-mime")])).toEqual([122]);
+  });
+
+  it("ordena por número mesmo com a entrada fora de ordem", () => {
+    expect(ids("char", [...especies].reverse())).toEqual([4, 5, 6]);
+  });
+
+  it("respeita um limite explícito", () => {
+    expect(sugerirPokemon(especies, "a", 3).map((p) => p.id)).toEqual([1, 2, 3]);
+  });
+
+  it("devolve lista vazia quando nada corresponde", () => {
+    expect(ids("xyzabc")).toEqual([]);
   });
 });

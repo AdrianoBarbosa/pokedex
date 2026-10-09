@@ -1,16 +1,18 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { Anuncio, Carregando, Erro } from "../componentes/Estado";
 import { ImagemPokemon } from "../componentes/ImagemPokemon";
+import { SeletorPokemon } from "../componentes/SeletorPokemon";
 import { SeloTipo } from "../componentes/SeloTipo";
 import { TabelaComparativo } from "../componentes/TabelaComparativo";
-import { compararStats, lerComparativo } from "../data/comparativo";
-import { ErroDeDados, type Lado, type PokemonDetalhe, type SelecaoLado } from "../data/modelos";
+import { compararStats, escreverComparativo, lerComparativo } from "../data/comparativo";
+import { ErroDeDados, type Lado, type PokemonDetalhe, type PokemonResumo, type SelecaoLado } from "../data/modelos";
 import { formatarNumero } from "../data/nomes";
 import { pokeApi } from "../data/pokeapi";
 import { useDados, type ResultadoDados } from "../hooks/useDados";
 
 const TITULOS: Record<Lado, string> = { a: "Primeiro Pokémon", b: "Segundo Pokémon" };
+const ROTULOS_SELETOR: Record<Lado, string> = { a: "Escolher o primeiro Pokémon", b: "Escolher o segundo Pokémon" };
 
 type EstadoLado =
   | { tipo: "vazio" }
@@ -54,16 +56,58 @@ function anuncioDoComparativo(a: PokemonDetalhe | null, b: PokemonDetalhe | null
   return "";
 }
 
+const estiloBotaoSecundario =
+  "rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700";
+
 const estiloLink =
   "text-gray-900 underline-offset-2 hover:text-red-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700";
 
 interface BlocoLadoProps {
   lado: Lado;
   estado: EstadoLado;
+  especies: ResultadoDados<PokemonResumo[]>;
+  aoEscolher: (id: number) => void;
+  /** Depois de uma escolha, o foco vai para o título do lado assim que ele sai do carregamento (FR-026). */
+  focarTitulo: boolean;
+  aoFocarTitulo: () => void;
 }
 
-function BlocoLado({ lado, estado }: BlocoLadoProps) {
+/** Montado com `key` pela seleção do lado: o estado local de escolha some quando a URL muda. */
+function BlocoLado({ lado, estado, especies, aoEscolher, focarTitulo, aoFocarTitulo }: BlocoLadoProps) {
   const pokemon = estado.tipo === "carregado" ? estado.pokemon : null;
+  const titulo = useRef<HTMLHeadingElement>(null);
+  const [escolhendo, setEscolhendo] = useState(false);
+
+  useEffect(() => {
+    if (focarTitulo && estado.tipo !== "carregando") {
+      titulo.current?.focus();
+      aoFocarTitulo();
+    }
+  }, [focarTitulo, estado.tipo, aoFocarTitulo]);
+
+  function escolher(id: number) {
+    setEscolhendo(false);
+    aoEscolher(id);
+  }
+
+  function seletor(focarAoMontar: boolean) {
+    if (especies.dados) {
+      return (
+        <SeletorPokemon
+          rotulo={ROTULOS_SELETOR[lado]}
+          especies={especies.dados}
+          aoEscolher={escolher}
+          focarAoMontar={focarAoMontar}
+        />
+      );
+    }
+    if (especies.status === "erro") {
+      return <Erro compacto erro={especies.erro} aoTentarNovamente={especies.tentarNovamente} />;
+    }
+    return <Carregando texto="Carregando lista de Pokémon…" />;
+  }
+
   return (
     <section
       aria-labelledby={`titulo-lado-${lado}`}
@@ -83,7 +127,12 @@ function BlocoLado({ lado, estado }: BlocoLadoProps) {
             />
           </Link>
           <p className="text-xs font-medium text-gray-600">{formatarNumero(pokemon.id)}</p>
-          <h2 id={`titulo-lado-${lado}`} tabIndex={-1} className="text-lg font-bold break-words sm:text-2xl">
+          <h2
+            ref={titulo}
+            id={`titulo-lado-${lado}`}
+            tabIndex={-1}
+            className="text-lg font-bold break-words focus:outline-none sm:text-2xl"
+          >
             <Link to={`/pokemon/${pokemon.id}`} className={estiloLink}>
               {pokemon.nome}
             </Link>
@@ -98,22 +147,45 @@ function BlocoLado({ lado, estado }: BlocoLadoProps) {
           </ul>
         </>
       ) : (
-        <h2 id={`titulo-lado-${lado}`} tabIndex={-1} className="text-lg font-semibold text-gray-900">
+        <h2
+          ref={titulo}
+          id={`titulo-lado-${lado}`}
+          tabIndex={-1}
+          className="text-lg font-semibold text-gray-900 focus:outline-none"
+        >
           {TITULOS[lado]}
         </h2>
       )}
 
-      {estado.tipo === "vazio" && <p className="text-sm text-gray-700">Nenhum Pokémon escolhido</p>}
+      {estado.tipo === "vazio" && seletor(false)}
       {estado.tipo === "carregando" && <Carregando texto="Carregando Pokémon…" />}
       {estado.tipo === "erro" && <Erro compacto erro={estado.erro} aoTentarNovamente={estado.tentarNovamente} />}
-      {estado.tipo === "nao-encontrado" && <p className="text-sm font-medium text-gray-800">Pokémon não encontrado</p>}
+      {estado.tipo === "nao-encontrado" && (
+        <>
+          <p className="text-sm font-medium text-gray-800">Pokémon não encontrado</p>
+          {escolhendo ? (
+            seletor(true)
+          ) : (
+            <button type="button" onClick={() => setEscolhendo(true)} className={estiloBotaoSecundario}>
+              Escolher outro
+            </button>
+          )}
+        </>
+      )}
     </section>
   );
 }
 
 export function Comparativo() {
-  const [parametros] = useSearchParams();
+  const [parametros, setParametros] = useSearchParams();
   const selecao = lerComparativo(parametros);
+  // Guarda também o id: a navegação do roteador pode ser aplicada depois desta atualização de estado,
+  // e o foco só deve ir para o título quando o lado já mostrar o Pokémon escolhido.
+  const [focoPendente, setFocoPendente] = useState<{ lado: Lado; id: number } | null>(null);
+  const limparFoco = useCallback(() => setFocoPendente(null), []);
+
+  // Base das sugestões do seletor; normalmente já está em cache pela listagem (FR-023).
+  const especies = useDados("pokemon-species", pokeApi.listarEspecies, pokeApi.espiarEspecies);
 
   const dadosA = usePokemonDoLado(selecao.a);
   const dadosB = usePokemonDoLado(selecao.b);
@@ -127,6 +199,12 @@ export function Comparativo() {
   const pokemonA = estadoA.tipo === "carregado" ? estadoA.pokemon : null;
   const pokemonB = estadoB.tipo === "carregado" ? estadoB.pokemon : null;
   const resultado = pokemonA && pokemonB ? compararStats(pokemonA.stats, pokemonB.stats) : null;
+
+  // Cada escolha cria uma entrada no histórico e preserva o outro lado (FR-015, FR-017).
+  function escolher(lado: Lado, id: number) {
+    setParametros(escreverComparativo({ ...selecao, [lado]: id }));
+    setFocoPendente({ lado, id });
+  }
 
   const nomeA = pokemonA?.nome;
   const nomeB = pokemonB?.nome;
@@ -148,8 +226,17 @@ export function Comparativo() {
       )}
 
       <div className="grid grid-cols-2 gap-3 sm:gap-6">
-        <BlocoLado lado="a" estado={linkNaoMontado ? vazio : estadoA} />
-        <BlocoLado lado="b" estado={linkNaoMontado ? vazio : estadoB} />
+        {(["a", "b"] as const).map((lado) => (
+          <BlocoLado
+            key={`${lado}-${String(linkNaoMontado ? null : selecao[lado])}`}
+            lado={lado}
+            estado={linkNaoMontado ? vazio : lado === "a" ? estadoA : estadoB}
+            especies={especies}
+            aoEscolher={(id) => escolher(lado, id)}
+            focarTitulo={focoPendente?.lado === lado && focoPendente.id === selecao[lado]}
+            aoFocarTitulo={limparFoco}
+          />
+        ))}
       </div>
 
       {(pokemonA || pokemonB) && (
