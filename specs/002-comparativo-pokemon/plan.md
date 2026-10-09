@@ -127,6 +127,38 @@ nomes em pt-BR. O bloco de cada lado (cabeçalho do Pokémon com estados de carr
 encontrado e troca) fica dentro de `Comparativo.tsx` enquanto tiver um único uso, e só vira
 componente próprio se o arquivo ficar difícil de ler (Princípio I).
 
+## Adições feitas na implementação
+
+Itens que não estavam na spec nem nas tarefas originais, ou que as implementaram de forma diferente
+do texto da tarefa, mantidos por apoiarem a spec e a constituição sem acrescentar dependências
+(revisados na T026):
+
+| Adição | Onde | Justificativa |
+|---|---|---|
+| Teste de integração da página com a camada de dados simulada | `tests/paginas/Comparativo.test.tsx` | Cobre os fluxos das quatro histórias no jsdom (lado a lado, escolha, troca, desistência, "voltar", navegação principal). Encontrou um bug real de foco após a escolha |
+| Foco pendente guarda o lado e o `id` escolhido | `src/paginas/Comparativo.tsx` | O React Router aplica a navegação em uma transição, depois da atualização de estado da página. Sem o `id`, o foco ia para o bloco antigo, que era desmontado em seguida, e o foco caía no `body` (FR-026) |
+| Estado de troca local ao bloco do lado, montado com `key` pela seleção da URL | `src/paginas/Comparativo.tsx` | Mesmo comportamento do `ladoEmTroca` descrito na T019 (a troca some quando o `id` do lado muda, por exemplo pelo "voltar"), com menos código (Princípio I) |
+| Anúncio também quando só um lado está carregado ("Primeiro Pokémon: Gengar.") | `src/paginas/Comparativo.tsx` | FR-026 pede que toda atualização do comparativo seja anunciada; a T009 só cobria os dois lados (item C2 da análise) |
+| Altura mínima na área de tipos de cada lado | `src/paginas/Comparativo.tsx` | Caso de borda "um tipo ao lado de dois tipos" sem deslocamento (item C1 da análise) |
+| "Nenhum Pokémon encontrado" como parágrafo abaixo do campo, fora do `listbox` | `src/componentes/SeletorPokemon.tsx` | No padrão da APG, o `listbox` só contém opções; o contrato falava em "item não selecionável". A mensagem continua visível e anunciada |
+| `eslint-disable` de `jsx-a11y/click-events-have-key-events` nas opções do seletor | `src/componentes/SeletorPokemon.tsx` | No combobox da APG o teclado é tratado no campo (setas e Enter com `aria-activedescendant`); as opções só recebem clique |
+
+### Divergência conhecida com a spec
+
+- **FR-027 × sprite das sugestões**: o FR-027 pede texto alternativo com o nome em toda imagem do
+  seletor, mas o contrato e a T014 usam `alt=""` no sprite, que é decorativo ao lado do nome
+  escrito (Princípio IV: imagens decorativas DEVEM ter `alt=""`). A implementação segue o
+  contrato. Recomenda-se ajustar o texto do FR-027 (item I1 da análise).
+
+### Constitution Check final
+
+- Nenhuma dependência nova: `git diff main -- package.json package-lock.json` vazio.
+- Uma única ocorrência de `fetch(` em `src/`, em `src/data/http.ts`; o comparativo só usa
+  `pokeApi.obterPokemon`, `listarEspecies` e os `espiar*` existentes.
+- Lógica de dados nova (`lerComparativo`, `escreverComparativo`, `totalDeStats`, `compararStats`,
+  `correspondeABusca`, `sugerirPokemon`) com testes sem rede.
+- Documentação da feature em pt-BR.
+
 ## Complexity Tracking
 
 Nenhuma violação da constituição a justificar.

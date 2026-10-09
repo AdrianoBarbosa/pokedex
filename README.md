@@ -1,7 +1,19 @@
 # Pokédex
 
 Pokédex web que consome a [PokeAPI](https://pokeapi.co/): listagem paginada, busca por nome, filtro
-por tipo e detalhe de cada Pokémon com imagem, tipos, stats base e cadeia de evolução.
+por tipo, detalhe de cada Pokémon com imagem, tipos, stats base e cadeia de evolução, e comparativo
+entre dois Pokémon lado a lado, com o vencedor de cada stat e do total destacado.
+
+## Endereços
+
+| Tela | Endereço | Exemplo |
+|---|---|---|
+| Listagem | `/?pagina=<n>&busca=<texto>&tipo=<tipo>` | `/?tipo=water&busca=squi` |
+| Detalhe | `/pokemon/<número>` | `/pokemon/25` |
+| Comparativo | `/comparar?a=<número>&b=<número>` | `/comparar?a=6&b=9` (Charizard × Blastoise) |
+
+Todos os parâmetros são opcionais e os links podem ser compartilhados. No comparativo, `a` é o
+primeiro lado e `b` o segundo; um lado ausente aparece vazio, com o seletor de Pokémon.
 
 A aplicação é um front estático, sem backend. Os dados da PokeAPI passam por uma camada de cache
 no navegador (memória e `localStorage`, validade de 30 dias), respeitando a política de fair use
@@ -41,7 +53,7 @@ npm run dev
 | Lint (inclui acessibilidade) | `docker compose run --rm dev npm run lint` | `npm run lint` |
 
 Os testes cobrem toda a lógica de dados (`src/data/`) e não acessam a rede: usam fixtures em
-`tests/fixtures/`.
+`tests/fixtures/`. Há também testes do seletor de Pokémon e do fluxo da página de comparativo.
 
 ## Estrutura
 
@@ -49,16 +61,20 @@ Os testes cobrem toda a lógica de dados (`src/data/`) e não acessam a rede: us
 src/
 ├── data/         # camada de dados: único lugar que conhece a PokeAPI (rede, cache, normalização)
 ├── hooks/        # useDados: carregamento, erro e "tentar novamente"
-├── paginas/      # Listagem, Detalhe e NaoEncontrada
-└── componentes/  # cartões, paginação, busca, filtro, stats, cadeia de evolução
+├── paginas/      # Listagem, Detalhe, Comparativo e NaoEncontrada
+└── componentes/  # cartões, paginação, busca, filtro, stats, cadeia de evolução, seletor e tabela do comparativo
 tests/
 ├── data/         # testes da camada de dados
+├── componentes/  # testes de componentes com comportamento de teclado
+├── paginas/      # fluxo da página de comparativo, com a camada de dados simulada
 └── fixtures/     # respostas reduzidas da PokeAPI
 ```
 
 ## Documentação
 
 - Constituição do projeto: [.specify/memory/constitution.md](.specify/memory/constitution.md)
-- Especificação, plano e tarefas da feature:
-  [specs/001-pokedex-listagem-detalhe/](specs/001-pokedex-listagem-detalhe/)
-- Roteiro de validação: [quickstart.md](specs/001-pokedex-listagem-detalhe/quickstart.md)
+- Especificação, plano e tarefas de cada feature:
+  - Listagem e detalhe: [specs/001-pokedex-listagem-detalhe/](specs/001-pokedex-listagem-detalhe/)
+  - Comparativo entre dois Pokémon: [specs/002-comparativo-pokemon/](specs/002-comparativo-pokemon/)
+- Roteiros de validação: [quickstart da 001](specs/001-pokedex-listagem-detalhe/quickstart.md) e
+  [quickstart da 002](specs/002-comparativo-pokemon/quickstart.md)

@@ -164,12 +164,21 @@ Alakazam e ver `/comparar?a=94&b=65` (roteiro "História 4" de [quickstart.md](.
 
 **Propósito**: documentação, quality gates da constituição e validação manual.
 
-- [ ] T021 [P] Atualizar `README.md` incluindo o comparativo entre as funcionalidades e a rota `/comparar?a=<id>&b=<id>` com um exemplo, e o link para `specs/002-comparativo-pokemon/` na seção Documentação
-- [ ] T022 Rodar as verificações automáticas da tabela de [quickstart.md](./quickstart.md): `npm test`, `npm run typecheck` e `npm run lint` passando; `grep -rn "fetch(" src --include="*.ts" --include="*.tsx"` com uma única ocorrência em `src/data/http.ts`; `git diff main -- package.json` sem alteração em dependências
+- [X] T021 [P] Atualizar `README.md` incluindo o comparativo entre as funcionalidades e a rota `/comparar?a=<id>&b=<id>` com um exemplo, e o link para `specs/002-comparativo-pokemon/` na seção Documentação
+- [X] T022 Rodar as verificações automáticas da tabela de [quickstart.md](./quickstart.md): `npm test`, `npm run typecheck` e `npm run lint` passando; `grep -rn "fetch(" src --include="*.ts" --include="*.tsx"` com uma única ocorrência em `src/data/http.ts`; `git diff main -- package.json` sem alteração em dependências
 - [ ] T023 Executar no serviço `web` os roteiros manuais "História 1" a "História 4" e "Erros e casos de borda" de [quickstart.md](./quickstart.md), conferindo o número de requisições à PokeAPI (5 num link frio, 0 em revisitas e 0 ao digitar no seletor)
 - [ ] T024 Executar o roteiro "Acessibilidade (Princípio IV)" de [quickstart.md](./quickstart.md): só teclado nas quatro histórias, leitor de tela na tabela e nos anúncios, Lighthouse Accessibility em `/comparar?a=6&b=9` e `/comparar`, e emulação de 320 px sem rolagem horizontal; corrigir o que falhar nos arquivos de `src/` correspondentes
 - [ ] T025 Executar o roteiro "Desempenho (SC-002 e SC-003)" de [quickstart.md](./quickstart.md) e registrar os resultados (FCP, LCP e tempo até interativo do Lighthouse desktop em `/comparar?a=6&b=9`) nessa mesma seção, no formato da tabela da 001
-- [ ] T026 Revisar `specs/002-comparativo-pokemon/plan.md`: se a implementação acrescentou algo fora da spec e das tarefas, registrar em uma seção "Adições feitas na implementação" com a justificativa, como na 001; confirmar o Constitution Check final (sem dependências novas, sem chamadas fora da camada de cache, documentação em pt-BR)
+- [X] T026 Revisar `specs/002-comparativo-pokemon/plan.md`: se a implementação acrescentou algo fora da spec e das tarefas, registrar em uma seção "Adições feitas na implementação" com a justificativa, como na 001; confirmar o Constitution Check final (sem dependências novas, sem chamadas fora da camada de cache, documentação em pt-BR)
+
+### Pendências de validação manual
+
+T023, T024 e T025 exigem navegador, leitor de tela, Lighthouse ou o serviço `web` no Docker e
+ficam pendentes até serem executadas por uma pessoa. Não bloqueiam a convergência. O que já foi
+coberto automaticamente: os fluxos das quatro histórias, foco e anúncios em
+`tests/paginas/Comparativo.test.tsx`; teclado do seletor em
+`tests/componentes/SeletorPokemon.test.tsx`; lint de acessibilidade (`jsx-a11y`) sem erros; e o
+build de produção (`npm run build`).
 
 ---
 
